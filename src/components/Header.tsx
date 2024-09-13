@@ -1,5 +1,6 @@
 import React from "react";
-import {Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle, NavbarMenu, NavbarMenuItem, Link, Button} from "@nextui-org/react";
+import {Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle, NavbarMenu, NavbarMenuItem, Button} from "@nextui-org/react";
+import {Link} from "react-router-dom";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -27,7 +28,7 @@ export default function Header() {
           {
             menuItems.map((item, index) => (
               <NavbarItem key={index}>
-                <Link color="foreground" href={`/${item.toLowerCase()}`}>
+                <Link color="foreground" to={`/${item.toLowerCase()}`}>
                   {item}
                 </Link>
               </NavbarItem>
@@ -37,11 +38,11 @@ export default function Header() {
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem className="hidden lg:flex font-semibold">
-          <Link href="#">Login</Link>
+          <Link to='/login'>Login</Link>
         </NavbarItem>
         <NavbarItem>
-          <Button as={Link} className="font-semibold bg-slate-800 text-white" color="default" href="#" variant="flat">
-            Sign Up
+          <Button className="font-semibold bg-slate-800 text-white" color="default"  variant="flat">
+            <Link to='/register'>Sign Up</Link>
           </Button>
         </NavbarItem>
       </NavbarContent>
@@ -50,8 +51,7 @@ export default function Header() {
           <NavbarMenuItem key={index}>
             <Link
               className="w-full text-slate-800"
-              href={`/${item.toLowerCase()}`}
-              size="lg"
+              to={`/${item.toLowerCase()}`}              
             >
               {item}
             </Link>
