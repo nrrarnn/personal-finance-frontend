@@ -4,6 +4,8 @@ import { Controller, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom"
 import { z } from "zod";
 import api from "../../api/api";
+import { IoEye, IoEyeOff } from "react-icons/io5";
+import { useState } from "react";
 
 const registerSchema = z.object({
   username: z.string().min(4, "Name minimal 4 karakter"),
@@ -16,6 +18,11 @@ const registerSchema = z.object({
 });
 const RegisterPage = () => {
   const navigate = useNavigate()
+  const [isVisible, setIsVisible] = useState<boolean>(false);
+  const [isVisibleConfirm, setIsVisibleConfirm] = useState<boolean>(false);
+
+  const toggleVisibility = () => setIsVisible(!isVisible);
+  const toggleVisibilityConfirm = () => setIsVisibleConfirm(!isVisibleConfirm);
 
   const form = useForm({
     defaultValues: {
@@ -84,10 +91,20 @@ const RegisterPage = () => {
             render={({ field, fieldState }) => (
             <Input
               {...field}
-              type="password"
               label="Password"
               isInvalid={Boolean(fieldState.error)}
               errorMessage={fieldState.error?.message}
+              endContent={
+                <button className="focus:outline-none" type="button" onClick={toggleVisibility} aria-label="toggle password visibility">
+                  {isVisible ? (
+                    <IoEyeOff className="text-2xl text-default-400 pointer-events-none" />
+                  ) : (
+                    <IoEye className="text-2xl text-default-400 pointer-events-none" />
+                  )}
+                </button>
+              }
+              type={isVisible ? "text" : "password"}
+              className="max-w-xs"
                 />
               )}
             />
@@ -97,10 +114,20 @@ const RegisterPage = () => {
             render={({ field, fieldState }) => (
             <Input
               {...field}
-              type="password"
               label="Confirm Password"
               isInvalid={Boolean(fieldState.error)}
               errorMessage={fieldState.error?.message}
+              endContent={
+                <button className="focus:outline-none" type="button" onClick={toggleVisibilityConfirm} aria-label="toggle password visibility">
+                  {isVisibleConfirm ? (
+                    <IoEyeOff className="text-2xl text-default-400 pointer-events-none" />
+                  ) : (
+                    <IoEye className="text-2xl text-default-400 pointer-events-none" />
+                  )}
+                </button>
+              }
+              type={isVisibleConfirm ? "text" : "password"}
+              className="max-w-xs"
                 />
               )}
             />

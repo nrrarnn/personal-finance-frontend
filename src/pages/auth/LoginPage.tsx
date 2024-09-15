@@ -6,6 +6,8 @@ import api from "../../api/api"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useDispatch } from "react-redux"
 import { setAuth } from "../../store/authSlice"
+import { IoEye, IoEyeOff } from "react-icons/io5"
+import { useState } from "react"
 
 interface AuthResponse {
   token: string;
@@ -23,6 +25,9 @@ const LoginPage = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch();
 
+  const [isVisible, setIsVisible] = useState<boolean>(false);
+
+  const toggleVisibility = () => setIsVisible(!isVisible);
 
   const form = useForm({
     defaultValues: {
@@ -41,6 +46,10 @@ const LoginPage = () => {
       const token: string = response.data.token
       const username: string = response.data.user.username
       const email: string = response.data.user.email
+
+      localStorage.setItem("token", token)
+      localStorage.setItem("username", username)
+      localStorage.setItem("email", email)
 
       dispatch(setAuth({ token, username, email }));
 
@@ -75,10 +84,20 @@ const LoginPage = () => {
             render={({ field, fieldState }) => (
             <Input
               {...field}
-              type="password"
               label="Password"
               isInvalid={Boolean(fieldState.error)}
               errorMessage={fieldState.error?.message}
+              endContent={
+                <button className="focus:outline-none" type="button" onClick={toggleVisibility} aria-label="toggle password visibility">
+                  {isVisible ? (
+                    <IoEyeOff className="text-2xl text-default-400 pointer-events-none" />
+                  ) : (
+                    <IoEye className="text-2xl text-default-400 pointer-events-none" />
+                  )}
+                </button>
+              }
+              type={isVisible ? "text" : "password"}
+              className="max-w-xs"
                 />
               )}
             />

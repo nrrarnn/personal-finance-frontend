@@ -1,47 +1,75 @@
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import api from "../../../api/api";
 import withAuth from "../../../hoc/withAuth";
-import { Button, Input } from "@nextui-org/react";
+import { Input, Select, SelectItem } from "@nextui-org/react";
+import { useEffect, useState } from "react";
 
-interface AddIncomeProps {
+interface AddExpenseProps {
   token: string | null;
 }
 
-interface IncomeFormInput {
+interface ExpenseFormInput {
   title: string;
   amount: number;
+  category: string;
   description: string;
 }
 
-const AddIncome: React.FC<AddIncomeProps> = ({ token }) => {
-  const { handleSubmit, control, formState: { errors }, reset } = useForm<IncomeFormInput>({
+interface Category {
+  _id: string;
+  name: string;
+}
+
+const AddExpense: React.FC<AddExpenseProps> = ({ token }) => {
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  const { handleSubmit, control, formState: { errors }, reset } = useForm<ExpenseFormInput>({
     defaultValues: {
       title: "",
       amount: 0,
+      category: "",
       description: "",
     },
   });
 
-  // Fungsi untuk handle submit form
-  const onSubmit: SubmitHandler<IncomeFormInput> = async (data) => {
+
+
+  const getCategories = async () => {
+    try{
+      const response = await api.get<Category[]>('/categories', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+      })
+      setCategories(response.data)
+    } catch(error) {
+      console.error(error)
+    }
+  }
+
+  const onSubmit: SubmitHandler<ExpenseFormInput> = async (data) => {
     try {
-      const response = await api.post('/income', data, {
+      const response = await api.post('/expense', data, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
       console.log("Income added successfully:", response.data);
       
-      // Reset form setelah sukses
       reset();
     } catch (error) {
       console.error("Error adding income:", error);
     }
   };
 
+  useEffect(() => {
+    getCategories()
+  },[])
+
   return (
-    <div className="w-full md:w-[30%] p-3">
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
+    <div>
+      <h1>Add Expense</h1>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Controller
           name="title"
           control={control}
@@ -53,7 +81,6 @@ const AddIncome: React.FC<AddIncomeProps> = ({ token }) => {
               label="Title"
               isInvalid={Boolean(fieldState.error)}
               errorMessage={fieldState.error?.message}
-              color="primary"
             />
           )}
         />
@@ -70,11 +97,29 @@ const AddIncome: React.FC<AddIncomeProps> = ({ token }) => {
               isInvalid={Boolean(fieldState.error)}
               errorMessage={fieldState.error?.message}
               value={field.value.toString()} 
-              onChange={(e) => field.onChange(Number(e.target.value))} 
-              color="primary"
+              onChange={(e) => field.onChange(Number(e.target.value))} //
             />
           )}
         />
+
+        <Controller
+          name="category"
+          control={control}
+          rules={{ required: "Category is required" }}
+          render={({ field, fieldState }) => (
+            <Select
+              {...field}
+              label="Category"
+              placeholder="Select a category"
+              className="max-w-xs"
+              aria-label="Category"
+              items={categories}
+            >
+              {(category) => <SelectItem key={category.name} value={category.name}>{category.name}</SelectItem>}
+            </Select>
+          )}
+        />
+
 
         <Controller
           name="description"
@@ -84,15 +129,14 @@ const AddIncome: React.FC<AddIncomeProps> = ({ token }) => {
               {...field}
               type="text"
               label="Description"
-              color="primary"
             />
           )}
         />
 
-        <Button type="submit" color="primary">+ Add Income</Button>
+        <button type="submit">Add Expense</button>
       </form>
     </div>
   );
 };
 
-export default withAuth(AddIncome);
+export default withAuth(AddExpense);

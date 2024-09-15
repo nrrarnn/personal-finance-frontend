@@ -8,10 +8,14 @@ export interface AuthState { // Pastikan tipe AuthState di-export
   email : string | null;
 }
 
+const token: string | null = localStorage.getItem("token");
+const username: string | null = localStorage.getItem("username");
+const email: string | null = localStorage.getItem("email");
+
 const initialState: AuthState = {
-  token: null,
-  username: null,
-  email: null,
+  token: token,
+  username: username,
+  email: email,
 };
 
 const authSlice = createSlice({
