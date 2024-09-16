@@ -1,4 +1,4 @@
-import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input} from "@nextui-org/react"
+import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input, Select, SelectItem} from "@nextui-org/react"
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import api from "../../../api/api";
@@ -11,9 +11,20 @@ interface AddCategoryProps {
 
 interface CategoryFormInput {
   name: string;
+  icon: string;
+  type: string;
+}
+
+interface TypeSelect {
+  value: string;
+  label: string;
 }
 const AddCategory: React.FC<AddCategoryProps> = ({isOpen, onOpenChange, token}) => {
   const { register, handleSubmit, formState: { errors }, reset } = useForm<CategoryFormInput>();
+  const typeOptions: TypeSelect[] = [
+    { value: "expense", label: "Expense" },
+    { value: "income", label: "Income" }
+  ];
 
   const [loading, setLoading] = useState<boolean>(false); // State untuk loading
 
@@ -52,9 +63,24 @@ const AddCategory: React.FC<AddCategoryProps> = ({isOpen, onOpenChange, token}) 
                 <ModalBody>
                   <Input
                   type="text"
-                  placeholder="Category"
+                  placeholder="Category Name"
                   {...register("name", { required: "Category name is required" })}
-                  /> 
+                />
+                <Input
+                  type="text"
+                  placeholder="Icon"
+                  {...register("icon", { required: "Icon is required" })}
+                />
+                <Select
+                  placeholder="Select type"
+                  {...register("type", { required: "Category type is required" })}
+                >
+                  {typeOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </Select>
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose} >

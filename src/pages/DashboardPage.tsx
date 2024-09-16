@@ -5,6 +5,7 @@ import ListExpenses from "../components/dashboard/expense/ListExpenses";
 import HomeDashboard from "../components/dashboard/HomeDashboard";
 import AddIncome from "../components/dashboard/income/AddIncome";
 import ListIncome from "../components/dashboard/income/ListIncome";
+import ListIncomesByCategory from "../components/dashboard/income/ListIncomesByCategory";
 import Sidebar from "../components/dashboard/Sidebar"
 import { Route, Routes } from "react-router-dom";
 
@@ -16,6 +17,7 @@ const DashboardPage = () => {
         <Routes>
           <Route path="/home" element={<HomeDashboard/>} />
           <Route path="/incomes" element={<ListIncome/>} />
+          <Route path="/incomes/:category" element={<ListIncomesByCategory/>} />
           <Route path="/expenses" element={<ListExpenses/>} />
           <Route path="/expenses/:category" element={<ExpensesByCategory/>} />
           <Route path="/categories" element={<ListCategories/>} />

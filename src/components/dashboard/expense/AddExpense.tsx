@@ -1,7 +1,7 @@
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import api from "../../../api/api";
 import withAuth from "../../../hoc/withAuth";
-import { Input, Select, SelectItem } from "@nextui-org/react";
+import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 
 interface AddExpenseProps {
@@ -18,6 +18,8 @@ interface ExpenseFormInput {
 interface Category {
   _id: string;
   name: string;
+  icon: string;
+  type: string;
 }
 
 const AddExpense: React.FC<AddExpenseProps> = ({ token }) => {
@@ -62,14 +64,15 @@ const AddExpense: React.FC<AddExpenseProps> = ({ token }) => {
     }
   };
 
+  const expenseCategories = categories.filter(category => category.type === "expense");
+
   useEffect(() => {
     getCategories()
   },[])
 
   return (
-    <div>
-      <h1>Add Expense</h1>
-      <form onSubmit={handleSubmit(onSubmit)}>
+    <div className="w-full md:w-[30%] p-3">
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
         <Controller
           name="title"
           control={control}
@@ -79,6 +82,7 @@ const AddExpense: React.FC<AddExpenseProps> = ({ token }) => {
               {...field}
               type="text"
               label="Title"
+              color="secondary"
               isInvalid={Boolean(fieldState.error)}
               errorMessage={fieldState.error?.message}
             />
@@ -94,6 +98,7 @@ const AddExpense: React.FC<AddExpenseProps> = ({ token }) => {
               {...field}
               type="number"
               label="Amount"
+              color="secondary"
               isInvalid={Boolean(fieldState.error)}
               errorMessage={fieldState.error?.message}
               value={field.value.toString()} 
@@ -111,11 +116,17 @@ const AddExpense: React.FC<AddExpenseProps> = ({ token }) => {
               {...field}
               label="Category"
               placeholder="Select a category"
-              className="max-w-xs"
               aria-label="Category"
-              items={categories}
+              color="secondary"
+              items={expenseCategories}
+              onChange={(selectedValue) => field.onChange(selectedValue)} 
+              value={field.value} 
             >
-              {(category) => <SelectItem key={category.name} value={category.name}>{category.name}</SelectItem>}
+              {(category) => 
+              <SelectItem key={category.name} value={category.name}>
+                {category.name}
+              </SelectItem>
+              }
             </Select>
           )}
         />
@@ -129,11 +140,12 @@ const AddExpense: React.FC<AddExpenseProps> = ({ token }) => {
               {...field}
               type="text"
               label="Description"
+              color="secondary"
             />
           )}
         />
 
-        <button type="submit">Add Expense</button>
+        <Button type="submit" color="secondary">+ Add Expense</Button>
       </form>
     </div>
   );
