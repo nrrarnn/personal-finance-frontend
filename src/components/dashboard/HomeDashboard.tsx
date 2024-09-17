@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import api from "../../api/api";
 import withAuth from "../../hoc/withAuth"
-import { Button, Card, CardBody } from "@nextui-org/react";
-import { MdEmojiTransportation, MdFastfood } from "react-icons/md";
-import { FaMoneyBillTrendUp } from "react-icons/fa6";
+import { Button, Calendar, Card, CardBody, ScrollShadow } from "@nextui-org/react";
 import { IoFastFoodOutline } from "react-icons/io5";
+import { Link } from "react-router-dom";
+import { truncateText } from "../../data/functionTruncate";
+import { colors } from "../../data/colors";
+import { getLocalTimeZone, today } from "@internationalized/date";
+import { Category, TransactionResponse } from "../../types/types";
 
 interface DashboardProps {
   token: string | null;
@@ -17,10 +20,15 @@ interface BalanceResponse {
   totalExpense: number;
 }
 
+
+
 const HomeDashboard: React.FC<DashboardProps> = ({token, username}) => {
   const [balance, setBalance] = useState<number>(0);
   const [totalIncome, setTotalIncome] = useState<number >(0);
   const [totalExpense, setTotalExpense] = useState<number >(0);
+  const [listExpenses, setListExpenses] = useState<TransactionResponse[]>([]);
+  const [listIncomes, setListIncomes] = useState<TransactionResponse[]>([]);
+  const [listCategories, setListCategories] = useState<Category[]>([]);
   const getBalance = async () => {
     try {
       const response = await api.get<BalanceResponse>('/balance', {
@@ -37,10 +45,75 @@ const HomeDashboard: React.FC<DashboardProps> = ({token, username}) => {
       console.error(error);
     }
   }
+  const getCategories = async () => {
+    try{
+      const response = await api.get<Category[]>('/categories', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      setListCategories(response.data)
+    } catch(error) {
+      console.error(error)
+    }
+  }
+
+  const getExpenses = async () => {
+    try{
+      const response = await api.get<TransactionResponse[]>('/expenses', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      setListExpenses(response.data)
+    } catch(error) {
+      console.error(error)
+    }
+  }
+
+  const getIncomes = async () => {
+    try{
+      const response = await api.get<TransactionResponse[]>('/incomes', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      setListIncomes(response.data)
+    } catch(error) {
+      console.error(error)
+    }
+  }
 
   useEffect(() => {
     getBalance()
+    getCategories()
+    getExpenses()
+    getIncomes()
   },[])
+
+  const enhancedTransactions = [
+  ...listExpenses.map(expense => {
+    const category = listCategories.find(category => category.name === expense.category);
+    return {
+      ...expense,
+      type: 'expense',
+      categoryName: category?.name || 'Unknown',
+      icon: category?.icon || '❓',
+    };
+  }),
+  ...listIncomes.map(income => {
+    const category = listCategories.find(category => category.name === income.category);
+    return {
+      ...income,
+      type: 'income',
+      categoryName: category?.name || 'Unknown',
+      icon: category?.icon || '💰',
+    };
+  })
+];
+
+const sortedTransactions = enhancedTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+
 
   return (
     <>
@@ -69,41 +142,67 @@ const HomeDashboard: React.FC<DashboardProps> = ({token, username}) => {
             </Card>
           </div>
         </div>
+
         <div className="mt-5">
-          <h1 className="font-poppins font-semibold p-1">Categories</h1>
-          <div className=" w-[100%] md:w-[60%]">
-            <div className="flex flex-wrap gap-2">
-              <Button className="p-8" variant="flat" color="primary">
-                <MdFastfood className="text-3xl" />
-              </Button>
-              <Button className="p-8" variant="flat" color="danger">
-                <MdEmojiTransportation className="text-3xl"/>
-              </Button>
-              <Button className="p-8" variant="flat" color="success">
-                <FaMoneyBillTrendUp className="text-3xl" />
-              </Button>
-            </div>
-          </div>
-        </div>
-        <div className="mt-5">
-          <h1 className="font-poppins font-semibold p-1">Last Transactions</h1>
-          <div>
-            <Card className="bg-blue-400 text-white">
-              <CardBody className="flex flex-row justify-between">
-                <Button className="p-2 text-xl text-white h-[50px]" color="primary">
-                  <IoFastFoodOutline />
-                </Button>
-                <div className="flex flex-row justify-between w-full">
-                  <div className="pl-3">
-                    <h1 className="font-bold text-lg">Breakfast</h1>
-                    <p>expense</p>
-                  </div>
-                  <div className="text-sm">
-                    -Rp. 25.000
-                  </div>
+          <div className="flex flex-col md:flex-row">
+            <div className="w-full md:w-[50%]">
+              <div className="w-full flex flex-col">
+                <div className="flex flex-row justify-between pr-3">
+                  <h1 className="font-poppins font-semibold p-1">Categories</h1>
+                  <h6 className="text-sm font-poppins"><Link to={'/dashboard/categories'}>See all</Link></h6>
                 </div>
-              </CardBody>
-            </Card>
+                  <ScrollShadow
+                    hideScrollBar 
+                    orientation="horizontal" > 
+                    <div className="flex flex-row gap-1">
+                  {
+                    listCategories.slice(0, 6).map((category,index) => {
+                    const backgroundColor: string = colors[index % colors.length];
+                    return(
+                    <Button key={category._id} color={backgroundColor} className={`w-[80px] h-[80px]`} variant="flat"> 
+                      <Link to={`/dashboard/${category.type == 'income' ? 'incomes' : 'expenses'}/${category.name}`} className="p-3">
+                        <p className="text-xl">{category.icon}</p>
+                        {truncateText(category.name, 9)}
+                      </Link> 
+                    </Button> 
+                    )})
+                  }
+                    </div>
+                  </ScrollShadow>
+              </div> 
+              <div className="mt-5 w-full">
+                <h1 className="font-poppins font-semibold p-1">Last Transactions</h1>
+                <div className="flex flex-col gap-3">
+                  {sortedTransactions.map((transaction, index) => (
+                    <Card key={index} className={`${transaction.type === 'expense' ? 'bg-indigo-300' : 'bg-blue-300'} text-white`}>
+                      <CardBody className="flex flex-row justify-between">
+                        <Button className="p-2 text-xl text-white h-[50px]" color="primary" variant="flat">
+                          {transaction.icon} 
+                        </Button>
+                        <div className="flex flex-row justify-between w-full">
+                          <div className="pl-3">
+                            <h1 className="font-bold text-lg">{transaction.categoryName}</h1>
+                            <p>{transaction.type}</p>
+                          </div>
+                          <div className="text-sm">
+                            {transaction.type === 'expense' ? `-Rp. ${transaction.amount}` : `+Rp. ${transaction.amount}`}
+                          </div>
+                        </div>
+                      </CardBody>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="w-full md:w-[50%]">
+              <div className="w-full flex justify-center p-6">
+                <div className="flex gap-x-4">
+                  <Calendar aaria-label="Date (Read Only)" 
+                    value={today(getLocalTimeZone())} 
+                    isReadOnly  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

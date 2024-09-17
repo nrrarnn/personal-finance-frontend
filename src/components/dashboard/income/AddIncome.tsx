@@ -3,29 +3,13 @@ import api from "../../../api/api";
 import withAuth from "../../../hoc/withAuth";
 import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import { useEffect, useState } from "react";
+import { Category, TokenProps, TransactionFormInput } from "../../../types/types";
 
-interface AddIncomeProps {
-  token: string | null;
-}
 
-interface IncomeFormInput {
-  title: string;
-  amount: number;
-  category: string;
-  description: string;
-}
-
-interface Category {
-  _id: string;
-  name: string;
-  icon: string;
-  type: string;
-}
-
-const AddIncome: React.FC<AddIncomeProps> = ({ token }) => {
+const AddIncome: React.FC<TokenProps> = ({ token }) => {
   const [categories, setCategories] = useState<Category[]>([]);
 
-  const { handleSubmit, control, formState: { errors }, reset } = useForm<IncomeFormInput>({
+  const { handleSubmit, control, formState: { errors }, reset } = useForm<TransactionFormInput>({
     defaultValues: {
       title: "",
       amount: 0,
@@ -47,7 +31,7 @@ const AddIncome: React.FC<AddIncomeProps> = ({ token }) => {
     }
   }
 
-  const onSubmit: SubmitHandler<IncomeFormInput> = async (data) => {
+  const onSubmit: SubmitHandler<TransactionFormInput> = async (data) => {
     try {
       const response = await api.post('/income', data, {
         headers: {
@@ -108,7 +92,7 @@ const AddIncome: React.FC<AddIncomeProps> = ({ token }) => {
           name="category"
           control={control}
           rules={{ required: "Category is required" }}
-          render={({ field, fieldState }) => (
+          render={({ field }) => (
             <Select
               {...field}
               label="Category"

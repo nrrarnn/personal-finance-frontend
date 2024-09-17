@@ -3,29 +3,13 @@ import api from "../../../api/api";
 import withAuth from "../../../hoc/withAuth";
 import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import { useEffect, useState } from "react";
+import { Category, TokenProps, TransactionFormInput } from "../../../types/types";
 
-interface AddExpenseProps {
-  token: string | null;
-}
 
-interface ExpenseFormInput {
-  title: string;
-  amount: number;
-  category: string;
-  description: string;
-}
-
-interface Category {
-  _id: string;
-  name: string;
-  icon: string;
-  type: string;
-}
-
-const AddExpense: React.FC<AddExpenseProps> = ({ token }) => {
+const AddExpense: React.FC<TokenProps> = ({ token }) => {
   const [categories, setCategories] = useState<Category[]>([]);
 
-  const { handleSubmit, control, formState: { errors }, reset } = useForm<ExpenseFormInput>({
+  const { handleSubmit, control, formState: { errors }, reset } = useForm<TransactionFormInput>({
     defaultValues: {
       title: "",
       amount: 0,
@@ -33,8 +17,6 @@ const AddExpense: React.FC<AddExpenseProps> = ({ token }) => {
       description: "",
     },
   });
-
-
 
   const getCategories = async () => {
     try{
@@ -49,7 +31,7 @@ const AddExpense: React.FC<AddExpenseProps> = ({ token }) => {
     }
   }
 
-  const onSubmit: SubmitHandler<ExpenseFormInput> = async (data) => {
+  const onSubmit: SubmitHandler<TransactionFormInput> = async (data) => {
     try {
       const response = await api.post('/expense', data, {
         headers: {

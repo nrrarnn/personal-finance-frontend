@@ -2,46 +2,35 @@ import { useEffect, useState } from "react";
 import api from "../../../api/api"
 import withAuth from "../../../hoc/withAuth";
 import { Button, Card } from "@nextui-org/react";
-import { Link } from "react-router-dom";
-import { GiMoneyStack } from "react-icons/gi";
 import { FaCalendar } from "react-icons/fa6";
 import { RiChat1Fill } from "react-icons/ri";
 import AddExpense from "./AddExpense";
+import { Category, TokenProps, TransactionResponse } from "../../../types/types";
+import { getCategories, getExpenses } from "../../../api/servicesApi";
 
-interface ListExpenseProps {
-  token: string | null;
-}
-
-interface ExpenseResponse {
-  id: string;
-  title: string;
-  amount: number;
-  category: string;
-  type: string;
-  description: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-const ListExpenses: React.FC<ListExpenseProps> = ({token}) => {
-  const [listExpenses, setListExpenses] = useState<ExpenseResponse[]>([]);
-  const getExpenses = async () => {
-    try{
-      const response = await api.get<ExpenseResponse[]>('/expenses', {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-      })
-
-      setListExpenses(response.data)
-    } catch(error) {
-      console.error(error)
-    }   
-  }
+const ListExpenses: React.FC<TokenProps> = ({token}) => {
+  const [listExpenses, setListExpenses] = useState<TransactionResponse[]>([]);
+  const [listCategories, setListCategories] = useState<Category[]>([]);
 
   useEffect(() => {
-    getExpenses()
-  },[])
+    const fetchData = async () => {
+      if (token) {
+        try {
+          const [expenses, categories] = await Promise.all([
+            getExpenses(token),
+            getCategories(token)
+          ]);
+          setListExpenses(expenses);
+          setListCategories(categories);
+        } catch (error) {
+          console.error('Error loading data:', error);
+        }
+      }
+    };
+
+    fetchData();
+  }, [token]);
+
   return (
     <div className="p-0 ">
       <h1 className="text-3xl font-bold font-poppins">Incomes</h1>
@@ -49,28 +38,30 @@ const ListExpenses: React.FC<ListExpenseProps> = ({token}) => {
         <AddExpense/>
         <div className="w-full md:w-[60%] flex flex-col gap-3">
         {listExpenses.length > 0 ? (
-          listExpenses.map((expense) => (
-            <Card key={expense.id} className="w-full p-3 flex flex-row justify-between">
+          listExpenses.map((expense) => {
+            const category = listCategories.find(cat => cat.name === expense.category);
+            return(
+            <Card key={expense.id} className="w-full p-3 flex flex-row justify-between ">
               <div className="flex flex-row"> 
                 <div className="flex justify-center items-center">
                 <Button color="secondary" variant="flat" className="w-[50px] h-[50px]">
-                  <p className="text-xl">🏃‍♂️</p>
+                  {category?.icon}
                 </Button>
                 </div>
                 <div className="px-4">
                   <h3 className="font-poppins font-semibold text-slate-800">{expense.title}</h3>
-                  <p className="flex items-center gap-2"><FaCalendar className="text-xl" /> {new Date(expense.createdAt).toLocaleDateString()}</p>
-                  <p className="flex items-center gap-2"><RiChat1Fill className="text-xl"/><span className="flex flex-wrap">{expense.description}</span> </p>
+                  <p className="flex items-center gap-2"><FaCalendar /> {new Date(expense.createdAt).toLocaleDateString()}</p>
+                  <p className="flex items-center gap-2"><RiChat1Fill />{expense.description}</p>
                 </div>
               </div>
               <div className="flex pr-4 justify-right">
-                <p> - Rp. {expense.amount}</p>
+                <p> + Rp. {expense.amount}</p>
               </div>
               
             </Card>
-          ))
+          )})
         ) : (
-          <p>No incomes available.</p>
+          <p>No expenses available.</p>
         )}
       </div>
       </div>
