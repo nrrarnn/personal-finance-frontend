@@ -1,13 +1,34 @@
 import { useEffect, useState } from "react";
 import api from "../../api/api";
 import withAuth from "../../hoc/withAuth"
-import { Button, Calendar, Card, CardBody, ScrollShadow } from "@nextui-org/react";
-import { IoFastFoodOutline } from "react-icons/io5";
+import { Button, Card, CardBody, ScrollShadow } from "@nextui-org/react";
 import { Link } from "react-router-dom";
 import { truncateText } from "../../data/functionTruncate";
 import { colors } from "../../data/colors";
-import { getLocalTimeZone, today } from "@internationalized/date";
 import { Category, TransactionResponse } from "../../types/types";
+import {Chart as ChartJs, 
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend,
+    ArcElement,
+} from 'chart.js'
+import { Bar } from 'react-chartjs-2'
+
+ChartJs.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend,
+    ArcElement,
+)
+
 
 interface DashboardProps {
   token: string | null;
@@ -114,10 +135,66 @@ const HomeDashboard: React.FC<DashboardProps> = ({token, username}) => {
 
 const sortedTransactions = enhancedTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
 
+const dateFormat = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short', 
+    day: 'numeric', 
+  });
+};
+
+
+const data = {
+        labels: listIncomes.map((inc) =>{
+            const {createdAt} = inc
+            return dateFormat(createdAt)
+        }),
+        datasets: [
+            {
+                label: 'Income',
+                data: [
+                    ...listIncomes.map((income) => {
+                        const {amount} = income
+                        return amount
+                    })
+                ],
+                backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1,
+            },
+            {
+                label: 'Expenses',
+                data: [
+                    ...listExpenses.map((expense) => {
+                        const {amount} = expense
+                        return amount
+                    })
+                ],
+                backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1,
+            }
+        ]
+    }
+
+  const options = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: 'top' as const,
+    },
+    title: {
+      display: true,
+      text: 'Income and Expense Summary',
+    },
+  },
+}
+
 
   return (
     <>
-      <div className="p-4">
+      <div className="p-4 bg-[#f0f7ff]">
         <div className="text-md font-normal">Hello, {username} !</div>
         <div className="text-3xl font-extrabold font-poppins">Welcome To SaldaQ</div>
         <div className="flex flex-col md:flex-row mt-6 gap-2 w-full">
@@ -143,7 +220,7 @@ const sortedTransactions = enhancedTransactions.sort((a, b) => new Date(b.date) 
           </div>
         </div>
 
-        <div className="mt-5">
+        <div className="pt-5 bg-[#f0f7ff]">
           <div className="flex flex-col md:flex-row">
             <div className="w-full md:w-[50%]">
               <div className="w-full flex flex-col">
@@ -170,7 +247,7 @@ const sortedTransactions = enhancedTransactions.sort((a, b) => new Date(b.date) 
                     </div>
                   </ScrollShadow>
               </div> 
-              <div className="mt-5 w-full">
+              <div className="pt-5 w-full">
                 <h1 className="font-poppins font-semibold p-1">Last Transactions</h1>
                 <div className="flex flex-col gap-3">
                   {sortedTransactions.map((transaction, index) => (
@@ -196,11 +273,9 @@ const sortedTransactions = enhancedTransactions.sort((a, b) => new Date(b.date) 
             </div>
             <div className="w-full md:w-[50%]">
               <div className="w-full flex justify-center p-6">
-                <div className="flex gap-x-4">
-                  <Calendar aaria-label="Date (Read Only)" 
-                    value={today(getLocalTimeZone())} 
-                    isReadOnly  />
-                </div>
+                  <div className="flex gap-x-6 p-[1rem] border rounded-[20px] h-[100%]">
+                    <Bar data={data} options={options} />
+                  </div>
               </div>
             </div>
           </div>
@@ -209,5 +284,7 @@ const sortedTransactions = enhancedTransactions.sort((a, b) => new Date(b.date) 
     </>
   )
 } 
+
+
 
 export default withAuth(HomeDashboard)

@@ -21,7 +21,6 @@ const Sidebar = () => {
 
   return (
     <div className="flex flex-col md:flex-row">
-      {/* Sidebar */}
       <div className={`fixed left-0 top-0 h-screen w-[200px] bg-indigo-600 text-white hidden md:flex flex-col py-6 px-6`}>
         <h1 className="text-2xl font-extrabold mb-6 p-4 text-center">SaldaQ</h1>
         <Divider className="bg-slate-100 mb-5 opacity-60"/>
@@ -44,7 +43,6 @@ const Sidebar = () => {
         </div>
       </div>
 
-      {/* Sidebar untuk mobile, berbentuk icon di bawah */}
       <div className="md:hidden fixed bottom-2 w-full flex justify-center items-center z-[9999]">
         <div className=" w-full max-w-[350px] bg-indigo-600 text-white flex justify-around py-3 rounded-[25px] transition-transform duration-300">
           <Link to="/dashboard/home" className="p-3 hover:bg-indigo-700 rounded-full">

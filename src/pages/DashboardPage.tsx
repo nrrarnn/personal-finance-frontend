@@ -13,7 +13,7 @@ const DashboardPage = () => {
   return(
     <>
       <Sidebar/>
-      <div className="flex-1 ml-0 md:ml-[200px] p-4 bg-[#f0f7ff]">
+      <div className="flex-1 ml-0 md:ml-[200px] p-4 bg-[#f0f7ff] h-screen py-10">
         <Routes>
           <Route path="/home" element={<HomeDashboard/>} />
           <Route path="/incomes" element={<ListIncome/>} />

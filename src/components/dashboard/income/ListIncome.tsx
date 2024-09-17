@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import api from "../../../api/api"
 import withAuth from "../../../hoc/withAuth";
 import { Button, Card } from "@nextui-org/react";
 import AddIncome from "./AddIncome";

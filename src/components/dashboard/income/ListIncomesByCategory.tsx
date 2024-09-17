@@ -1,6 +1,5 @@
 import { useParams } from "react-router-dom"
 import withAuth from "../../../hoc/withAuth";
-import api from "../../../api/api";
 import { useEffect, useState } from "react";
 import { Category, TokenProps, TransactionResponse } from "../../../types/types";
 import { getByCategories, getCategories } from "../../../api/servicesApi";
