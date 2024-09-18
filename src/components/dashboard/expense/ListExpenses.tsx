@@ -28,11 +28,11 @@ const ListExpenses: React.FC<TokenProps> = ({token}) => {
     };
 
     fetchData();
-  }, [token]);
+  }, [token, listExpenses, listCategories]);
 
   return (
-    <div className="p-0 ">
-      <h1 className="text-3xl font-bold font-poppins">Incomes</h1>
+    <div className="pb-20">
+      <h1 className="text-3xl font-bold font-poppins">Expenses</h1>
       <div className="flex flex-wrap w-full pt-16 gap-5">
         <AddExpense/>
         <div className="w-full md:w-[60%] flex flex-col gap-3">

@@ -35,7 +35,7 @@ const ListCategories: React.FC<TokenProps> = ({token}) => {
     getCategories()
   },[ListCategories])
   return (
-    <div>
+    <div className="h-screen w-full bg-[#f0f7ff]">
       <Button color="primary" onPress={onOpen} className="right-5 top-5 absolute ">+ Add Category</Button>
       
       <AddCategory token={token} isOpen={isOpen} onOpenChange={onOpenChange}/>

@@ -93,7 +93,7 @@ const AddExpense: React.FC<TokenProps> = ({ token }) => {
           name="category"
           control={control}
           rules={{ required: "Category is required" }}
-          render={({ field, fieldState }) => (
+          render={({ field }) => (
             <Select
               {...field}
               label="Category"

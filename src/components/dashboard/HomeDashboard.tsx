@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import api from "../../api/api";
 import withAuth from "../../hoc/withAuth"
-import { Button, Card, CardBody, ScrollShadow } from "@nextui-org/react";
-import { Link } from "react-router-dom";
+import { Avatar, Button, Card, CardBody, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ScrollShadow } from "@nextui-org/react";
+import { Link, useNavigate } from "react-router-dom";
 import { truncateText } from "../../data/functionTruncate";
 import { colors } from "../../data/colors";
 import { Category, TransactionResponse } from "../../types/types";
@@ -17,6 +17,9 @@ import {Chart as ChartJs,
     ArcElement,
 } from 'chart.js'
 import { Bar } from 'react-chartjs-2'
+import { useDispatch } from "react-redux";
+import { logout } from "../../store/authSlice";
+import { BiLogOut } from "react-icons/bi";
 
 ChartJs.register(
     CategoryScale,
@@ -33,6 +36,7 @@ ChartJs.register(
 interface DashboardProps {
   token: string | null;
   username: string | null; 
+  email : string | null;
 }
 
 interface BalanceResponse {
@@ -43,13 +47,30 @@ interface BalanceResponse {
 
 
 
-const HomeDashboard: React.FC<DashboardProps> = ({token, username}) => {
+const HomeDashboard: React.FC<DashboardProps> = ({token, username,email}) => {
   const [balance, setBalance] = useState<number>(0);
   const [totalIncome, setTotalIncome] = useState<number >(0);
   const [totalExpense, setTotalExpense] = useState<number >(0);
   const [listExpenses, setListExpenses] = useState<TransactionResponse[]>([]);
   const [listIncomes, setListIncomes] = useState<TransactionResponse[]>([]);
   const [listCategories, setListCategories] = useState<Category[]>([]);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const openModal = () => setIsOpen(true);
+  const closeModal = () => setIsOpen(false);
+
+  // Fungsi untuk menangani logout
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('username');
+    localStorage.removeItem('email');
+    dispatch(logout()); 
+    setIsOpen(false);
+    navigate('/');
+  };
   const getBalance = async () => {
     try {
       const response = await api.get<BalanceResponse>('/balance', {
@@ -193,10 +214,57 @@ const data = {
 
 
   return (
-    <>
-      <div className="p-4 bg-[#f0f7ff]">
-        <div className="text-md font-normal">Hello, {username} !</div>
-        <div className="text-3xl font-extrabold font-poppins">Welcome To SaldaQ</div>
+    <section className="w-full bg-[#f0f7ff] pb-32 ">
+      <div className="p-4">
+        <div className="flex flex-row justify-between px-4">
+          <div>
+            <div className="text-md font-normal">Hello, {username} !</div>
+            <div className="text-xl md:text-3xl font-extrabold font-poppins">Welcome To SaldaQ</div>
+          </div>
+          <div className="block md:hidden">
+            <Dropdown placement="bottom-end">
+              <DropdownTrigger>
+                <Avatar
+                  isBordered
+                  as="button"
+                  className="transition-transform"
+                  src="https://img.freepik.com/free-psd/3d-illustration-person_23-2149436192.jpg?t=st=1726625364~exp=1726628964~hmac=5a87525a29dae77f1ef01badda331588c349077da8797d323fba51cd6f8ebcf8&w=740"
+                />
+              </DropdownTrigger>
+              <DropdownMenu aria-label="Profile Actions" variant="flat">
+                <DropdownItem key="profile" className="h-14 gap-2">
+                  <p className="font-semibold">Signed in as</p>
+                  <p className="font-semibold">{email}</p>
+                </DropdownItem>
+                <DropdownItem key="logout" color="danger">
+                  <button onClick={openModal} className="px-2 flex items-center gap-2">
+                      <BiLogOut />Log Out
+                  </button>
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          </div>
+        </div>
+        <Modal 
+        size="sm" 
+        isOpen={isOpen} 
+        onClose={closeModal} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+      >
+        <ModalContent>
+          <ModalHeader className="flex flex-col gap-1">Konfirmasi Logout</ModalHeader>
+            <ModalBody>
+              <p>Apakah Anda yakin ingin logout?</p>
+            </ModalBody>
+            <ModalFooter>
+              <Button color="danger" variant="light" onPress={closeModal}>
+                Batal
+              </Button>
+              <Button color="primary" onPress={handleLogout}>
+                Logout
+              </Button>
+            </ModalFooter>
+        </ModalContent>
+      </Modal>
         <div className="flex flex-col md:flex-row mt-6 gap-2 w-full">
           <Card className="w-[95%] md:w-[400px] h-[100px] bg-[#88a2ff] text-white">
             <CardBody>
@@ -220,7 +288,7 @@ const data = {
           </div>
         </div>
 
-        <div className="pt-5 bg-[#f0f7ff]">
+        <div className="pt-5 bg-[#f0f7ff] w-full">
           <div className="flex flex-col md:flex-row">
             <div className="w-full md:w-[50%]">
               <div className="w-full flex flex-col">
@@ -272,8 +340,8 @@ const data = {
               </div>
             </div>
             <div className="w-full md:w-[50%]">
-              <div className="w-full flex justify-center p-6">
-                  <div className="flex gap-x-6 p-[1rem] border rounded-[20px] h-[100%]">
+              <div className="w-full flex justify-center p-6 ">
+                  <div className="flex p-[1rem] border rounded-[20px] h-[100%] bg-white">
                     <Bar data={data} options={options} />
                   </div>
               </div>
@@ -281,7 +349,8 @@ const data = {
           </div>
         </div>
       </div>
-    </>
+
+    </section>
   )
 } 
 
