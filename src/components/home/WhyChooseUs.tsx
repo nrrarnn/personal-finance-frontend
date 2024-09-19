@@ -38,24 +38,26 @@ const WhyChooseUsCard: React.FC<WhyChooseUsCardProps> = ({ title, description, I
 const WhyChooseUs = () => {
 
   return (
-    <section>
+  <>
+    <div>
       <div className="text-center pb-3">
         <h1 className="text-2xl font-extrabold font-poppins pt-10 ">Why Choose Us?</h1>
-        <p className="text-md text-slate-700">
-          Empowering you to take control of your finances
-        </p>
+          <p className="text-md text-slate-700">
+            Empowering you to take control of your finances
+          </p>
+        </div>
+        <div className="grid gap-8 md:grid-cols-1 lg:grid-cols-3 px-3 md:px-20 py-10">
+          {points.map((point, index) => (
+            <WhyChooseUsCard
+              key={index}
+              title={point.title}
+              description={point.description}
+              Icon={point.Icon}
+            />
+          ))}
+        </div>
       </div>
-      <div className="grid gap-8 md:grid-cols-1 lg:grid-cols-3 px-3 md:px-20 py-10">
-        {points.map((point, index) => (
-          <WhyChooseUsCard
-            key={index}
-            title={point.title}
-            description={point.description}
-            Icon={point.Icon}
-          />
-        ))}
-      </div>
-    </section>
+    </>
   )
 }
 

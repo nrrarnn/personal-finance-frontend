@@ -33,26 +33,28 @@ const Faq: React.FC = () => {
   };
 
   return (
-    <section className="py-16 bg-blue-50">
-      <div className="max-w-3xl mx-auto px-6">
-        <h2 className="text-4xl font-bold font-poppins text-center mb-10">Frequently Asked Questions</h2>
-        <div className="space-y-6">
-          {faqData.map((faq, index) => (
-            <div key={index} className="bg-white p-6 rounded-lg shadow-lg">
-              <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleFAQ(index)}>
-                <h3 className="text-xl font-semibold">{faq.question}</h3>
-                <span>{activeIndex === index ? '-' : '+'}</span>
-              </div>
-              {activeIndex === index && (
-                <div className="mt-4">
-                  <p className="text-gray-600">{faq.answer}</p>
+    <>
+      <div className="py-16 bg-blue-50">
+        <div className="max-w-3xl mx-auto px-6">
+          <h2 className="text-4xl font-bold font-poppins text-center mb-10">Frequently Asked Questions</h2>
+          <div className="space-y-6">
+            {faqData.map((faq, index) => (
+              <div key={index} className="bg-white p-6 rounded-lg shadow-lg">
+                <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleFAQ(index)}>
+                  <h3 className="text-xl font-semibold">{faq.question}</h3>
+                  <span>{activeIndex === index ? '-' : '+'}</span>
                 </div>
-              )}
-            </div>
-          ))}
+                {activeIndex === index && (
+                  <div className="mt-4">
+                    <p className="text-gray-600">{faq.answer}</p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-    </section>
+    </>
   );
 };
 

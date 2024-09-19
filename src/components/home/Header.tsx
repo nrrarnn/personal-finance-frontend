@@ -28,9 +28,9 @@ export default function Header() {
           {
             menuItems.map((item, index) => (
               <NavbarItem key={index}>
-                <Link color="foreground" to={`/${item.toLowerCase()}`}>
+                <a color="foreground" href={`#${item.toLowerCase()}`}>
                   {item}
-                </Link>
+                </a>
               </NavbarItem>
             ))
           }
@@ -49,12 +49,12 @@ export default function Header() {
       <NavbarMenu className="pt-6">
         {menuItems.map((item, index) => (
           <NavbarMenuItem key={index}>
-            <Link
+            <a
               className="w-full text-slate-800"
-              to={`/${item.toLowerCase()}`}              
+              href={`/${item.toLowerCase()}`}              
             >
               {item}
-            </Link>
+            </a>
           </NavbarMenuItem>
         ))}
       </NavbarMenu>

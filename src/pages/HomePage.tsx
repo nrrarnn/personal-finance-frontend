@@ -11,12 +11,20 @@ const HomePage = () => {
   return (
     <>
       <Header/>
-      <HeroSection/>
-      <WhyChooseUs/>
-      <HowItWorksSection/>
-      <Features/>
-      <CustomerReviews/>
-      <Faq/>
+      <section id="home">
+        <HeroSection/>
+        <WhyChooseUs/>
+        <HowItWorksSection/>
+      </section>
+      <section id="features">
+        <Features/>
+      </section>
+      <section id="customers">
+        <CustomerReviews/>
+      </section>
+      <section id="faq">
+        <Faq/>
+      </section> 
       <Footer/>
     </>
   )
