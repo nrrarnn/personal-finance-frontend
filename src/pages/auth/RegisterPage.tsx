@@ -132,12 +132,14 @@ const RegisterPage = () => {
               )}
             />
         
-        <Button type="submit" className="bg-indigo-500 text-white">Register</Button>
+        <Button type="submit" className="bg-blue-500 text-white">Register</Button>
       </form>
       <div>Sudah punya akun? <Link to="/login" className="text-blue-500">Login</Link></div>
       </div>
-      <div className="w-[48%] h-full hidden sm:flex bg-indigo-500 justify-center">
-        <img src="fp.png" alt="register" className="w-[500px] bg-cover" />
+      <div className="w-[52%] h-full hidden sm:flex bg-blue-400 justify-center items-center">
+        <div className="w-[500px] h-[550px]">
+          <img src="fin.png" alt="register" className="w-[500px] h-[550px]"/>
+        </div> 
       </div>
     </div>
     </>

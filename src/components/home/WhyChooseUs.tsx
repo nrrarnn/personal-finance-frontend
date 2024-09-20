@@ -8,7 +8,7 @@ interface WhyChooseUsCardProps {
 
 const WhyChooseUsCard: React.FC<WhyChooseUsCardProps> = ({ title, description, Icon }) => {
   return (
-    <Card className="p-6">
+    <Card className="p-6 hover-card">
       <div className="text-blue-400 text-4xl mb-4">
         <Icon />
       </div>
@@ -39,7 +39,7 @@ const WhyChooseUs = () => {
 
   return (
   <>
-    <div>
+    <div  data-aos="fade-down">
       <div className="text-center pb-3">
         <h1 className="text-2xl font-extrabold font-poppins pt-10 ">Why Choose Us?</h1>
           <p className="text-md text-slate-700">

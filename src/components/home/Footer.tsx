@@ -5,7 +5,6 @@ const Footer: React.FC = () => {
     <footer className="bg-gray-800 text-white py-8">
       <div className="container mx-auto px-6 md:px-12">
         <div className="flex flex-wrap justify-between items-center">
-          {/* Logo dan Deskripsi */}
           <div className="w-full md:w-[25%] mb-6 md:mb-0">
             <h2 className="text-2xl font-bold">SaldaQ</h2>
             <p className="mt-2 text-gray-400">
@@ -13,7 +12,6 @@ const Footer: React.FC = () => {
             </p>
           </div>
 
-          {/* Navigasi */}
           <div className="w-full md:w-[25%] mb-6 md:mb-0">
             <h3 className="text-lg font-semibold mb-3">Resources</h3>
             <ul>

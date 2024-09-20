@@ -1,6 +1,6 @@
 import { Image } from '@nextui-org/react';
 import React from 'react';
-import { FaCog, FaRocket, FaShieldAlt } from 'react-icons/fa';
+import { FaChartBar, FaClipboardCheck, FaFileInvoiceDollar, FaUserPlus } from 'react-icons/fa';
 interface HowItWorksItem {
   title: string;
   description: string;
@@ -11,22 +11,22 @@ const howItWorks: HowItWorksItem[] = [
   { 
     title: "Create an Account", 
     description: "Sign up on SaldaQ to start tracking your personal finances.", 
-    Icon: FaCog 
+    Icon: FaUserPlus 
   },
   { 
     title: "Add Transactions", 
     description: "Log your daily expenses and income by selecting predefined categories or creating custom ones to suit your lifestyle.", 
-    Icon: FaRocket 
+    Icon: FaFileInvoiceDollar 
   },
   { 
     title: "Visualize Financial Data", 
     description: "SaldaQ generates reports and graphs based on your transactions, helping you understand your financial habits and make better decisions", 
-    Icon: FaRocket 
+    Icon: FaChartBar 
   },
   { 
     title: "Stay in Control", 
     description: "With detailed insights, you can plan your budget, track savings, and manage expenses efficiently, all in one place", 
-    Icon: FaShieldAlt 
+    Icon: FaClipboardCheck 
   },
 ];
 

@@ -43,13 +43,13 @@ const CustomerReviews: React.FC = () => {
   };
 
   return (
-    <div className="py-16 bg-white">
+    <div className="py-16 bg-white"  data-aos="fade-up">
       <div className="max-w-4xl mx-auto px-6">
         <h2 className="text-4xl font-bold text-center mb-4 font-poppins">What Our Customers Say</h2>
         <p className="text-lg text-center mb-16">See why thousands of customers love using SaldaQ to manage their finances.</p>
         <Slider {...settings}>
           {reviews.map((review, index) => (
-            <div key={index} className="bg-gray-100 p-6 rounded-lg shadow-lg text-center">
+            <div key={index} className="bg-white p-6 border border-slate-300 rounded-lg shadow-lg  text-center">
               <img src={review.avatar} alt={review.name} className="w-20 h-20 rounded-full mx-auto mb-4" />
               <h3 className="text-xl font-semibold">{review.name}</h3>
               <p className="text-gray-500 mb-2">{review.position}</p>

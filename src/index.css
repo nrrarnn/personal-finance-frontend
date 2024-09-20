@@ -14,6 +14,27 @@
   bottom: 0;
   width: 100%;
   z-index: 9999;
-  padding-bottom: env(safe-area-inset-bottom); /* Menambahkan safe area padding untuk perangkat tertentu */
+  padding-bottom: env(safe-area-inset-bottom); 
 }
+
+
+.hover-card {
+  @apply overflow-hidden transform hover:transition-all hover:duration-300 hover:ease-in-out hover:scale-105;
+} 
+
+.slow-bounce {
+  display: inline-block;
+  animation: moveUpDown 2.5s ease-in-out infinite;
+  -webkit-animation: moveUpDown 2.5s ease-in-out infinite;
+}
+
+@keyframes moveUpDown {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
 

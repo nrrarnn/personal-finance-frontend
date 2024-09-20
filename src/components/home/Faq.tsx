@@ -34,7 +34,7 @@ const Faq: React.FC = () => {
 
   return (
     <>
-      <div className="py-16 bg-blue-50">
+      <div className="py-16 bg-blue-50"  data-aos="fade-down">
         <div className="max-w-3xl mx-auto px-6">
           <h2 className="text-4xl font-bold font-poppins text-center mb-10">Frequently Asked Questions</h2>
           <div className="space-y-6">
