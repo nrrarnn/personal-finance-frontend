@@ -33,12 +33,10 @@ const howItWorks: HowItWorksItem[] = [
 const HowItWorksSection: React.FC = () => {
   return (
     <>
-      <div className="relative w-full flex flex-wrap justify-between px-4 md:px-20 mt-20 pb-8">
-        {/* Background */}
-        <div className='w-full md:w-[46%]'>
+      <div className="relative w-full flex flex-wrap justify-between px-4 md:px-20 mt-20 pb-8" data-aos="fade-up">
+        <div className='w-full md:w-[46%]' >
         <div className="absolute w-[300px] h-[300px] md:w-[350px] md:h-[350px] sm:w-[400px] sm:h-[400px] md:top-[30px] lg:top-20  sm:left-[50px] md:left-12 lg:left-[155px] bg-blue-300 rounded-full"></div>
         
-        {/* Image */}
         <div className="relative z-10 flex-1 md:top-10">
           <Image
             src="./how.png"
@@ -48,7 +46,6 @@ const HowItWorksSection: React.FC = () => {
         </div>
         </div>
 
-        {/* How Does It Work */}
         <div className="w-full md:w-[46%] flex flex-col justify-center">
           <h2 className="text-2xl font-extrabold mb-4 font-poppins">How Does It Work?</h2>
           <ul className="space-y-4">

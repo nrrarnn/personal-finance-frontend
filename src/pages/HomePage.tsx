@@ -5,6 +5,7 @@ import Footer from "../components/home/Footer.tsx"
 import Header from "../components/home/Header"
 import HeroSection from "../components/home/HeroSection"
 import HowItWorksSection from "../components/home/HowItWorksSection.tsx"
+import ScrollToTopButton from "../components/home/ScrollComponent.tsx"
 import WhyChooseUs from "../components/home/WhyChooseUs"
 
 const HomePage = () => {
@@ -26,6 +27,7 @@ const HomePage = () => {
         <Faq/>
       </section> 
       <Footer/>
+      <ScrollToTopButton/>
     </>
   )
 }
