@@ -26,25 +26,23 @@ const AddCategory: React.FC<AddCategoryProps> = ({isOpen, onOpenChange, token}) 
     { value: "income", label: "Income" }
   ];
 
-  const [loading, setLoading] = useState<boolean>(false); // State untuk loading
+  const [loading, setLoading] = useState<boolean>(false);
 
-  // Fungsi submit form
   const onSubmit: SubmitHandler<CategoryFormInput> = async (data) => {
     try {
       setLoading(true);
-      // Mengirim data ke backend
       const response = await api.post(
-        "/category", // Endpoint di backend
-        data, // Data dari form (berisi nama kategori)
+        "/category", 
+        data,
         {
           headers: {
-            Authorization: `Bearer ${token}`, // Menggunakan token untuk autentikasi
+            Authorization: `Bearer ${token}`, 
           },
         }
       );
       console.log("Category added:", response.data);
-      onOpenChange(false); // Menutup modal setelah sukses
-      reset(); // Mereset form setelah sukses
+      onOpenChange(false); 
+      reset();
     } catch (error) {
       console.error("Error adding category:", error);
       alert("Failed to add category");
