@@ -1,7 +1,7 @@
 import { Button, Divider, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@nextui-org/react";
 import { FaHome, FaWallet } from "react-icons/fa";
 import { useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { logout } from "../../store/authSlice";
 import { BiLogOut, BiSolidCategory } from "react-icons/bi";
 import { FaMoneyBills } from "react-icons/fa6";
@@ -12,6 +12,7 @@ const Sidebar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
 
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
@@ -31,16 +32,16 @@ const Sidebar = () => {
       <div className={`fixed left-0 top-0 h-screen w-[200px] bg-indigo-600 text-white hidden md:flex flex-col py-6 px-6`}>
         <h1 className="text-2xl font-extrabold mb-6 p-4 text-center">SaldaQ</h1>
         <Divider className="bg-slate-100 mb-5 opacity-60"/>
-        <Link to="/dashboard/home" className="p-4 hover:bg-indigo-700 rounded-lg">
+        <Link to="/dashboard/home" className={`p-4 ${location.pathname === "/dashboard/home" ? "bg-indigo-700" : ""} hover:bg-indigo-700 rounded-lg`}>
           <FaHome className="inline mr-2" /> Home
         </Link>
-        <Link to={'/dashboard/incomes'} className="p-4 hover:bg-indigo-700 rounded-lg">
+        <Link to={'/dashboard/incomes'} className={`p-4 ${location.pathname === "/dashboard/incomes" ? "bg-indigo-700" : ""} hover:bg-indigo-700 rounded-lg`}>
           <FaWallet className="inline mr-2" /> Income
         </Link>
-        <Link to={'/dashboard/expenses'} className="p-4 hover:bg-indigo-700 rounded-lg">
+        <Link to={'/dashboard/expenses'} className={`p-4 ${location.pathname === "/dashboard/expenses" ? "bg-indigo-700" : ""} hover:bg-indigo-700 rounded-lg`}>
           <FaMoneyBills className="inline mr-2" /> Expense
         </Link>
-        <Link to={'/dashboard/categories'} className="p-4 hover:bg-indigo-700 rounded-lg">
+        <Link to={'/dashboard/categories'} className={`p-4 ${location.pathname === "/dashboard/categories" ? "bg-indigo-700" : ""} hover:bg-indigo-700 rounded-lg`}>
           <BiSolidCategory className="inline mr-2" /> Category
         </Link>
         <div className="mt-auto px-4">
@@ -74,16 +75,16 @@ const Sidebar = () => {
 
       <div className="md:hidden fixed-bottom flex justify-center items-center">
         <div className=" w-full rounded-full bg-white text-slate-800 flex justify-around py-3 transition-transform duration-300">
-          <Link to="/dashboard/home" className="p-3 hover:bg-indigo-400 hover:text-white rounded-full">
+          <Link to="/dashboard/home" className={`${location.pathname === "/dashboard/home" ? "bg-indigo-400 text-white" : ""} p-3 hover:bg-indigo-400 hover:text-white rounded-full`}>
             <FaHome className="text-2xl" />
           </Link>
-          <Link to={'/dashboard/incomes'} className="p-3 hover:bg-indigo-400 hover:text-white rounded-full">
+          <Link to={'/dashboard/incomes'} className={`${location.pathname === "/dashboard/incomes" ? "bg-indigo-400 text-white" : ""} p-3 hover:bg-indigo-400 hover:text-white rounded-full`}>
             <FaWallet className="text-2xl" />
           </Link>
-          <Link to={'/dashboard/expenses'} className="p-3 hover:bg-indigo-400 hover:text-white rounded-full">
+          <Link to={'/dashboard/expenses'} className={`${location.pathname === "/dashboard/expenses" ? "bg-indigo-400 text-white" : ""} p-3 hover:bg-indigo-400 hover:text-white rounded-full`}>
             <FaMoneyBills className="text-2xl" />
           </Link>
-          <Link to={'/dashboard/categories'} className="p-3 hover:bg-indigo-400 hover:text-white rounded-full">
+          <Link to={'/dashboard/categories'} className={`${location.pathname === "/dashboard/categories" ? "bg-indigo-400 text-white" : ""} p-3 hover:bg-indigo-400 hover:text-white rounded-full`}>
             <BiSolidCategory  className="text-2xl" />
           </Link>
         </div>
