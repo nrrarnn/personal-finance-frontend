@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import withAuth from "../../../hoc/withAuth";
 import { useEffect, useState } from "react";
 import { Category, TokenProps, TransactionResponse } from "../../../types/types";
@@ -12,6 +12,7 @@ const IncomesByCategory: React.FC<TokenProps> = ({token}) => {
   const transaction: string = 'incomes'
   const [listIncomes, setListIncomes] = useState<TransactionResponse[]>([]);
   const [listCategories, setListCategories] = useState<Category[]>([]);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,28 +39,36 @@ const IncomesByCategory: React.FC<TokenProps> = ({token}) => {
   return (
     <div>
       <h1>Incomes By Category</h1>
-      <div className="w-full md:w-[60%] flex flex-col gap-3">
+      <div className="py-3">
+        <Button color="primary">
+          <Link to={'/dashboard/categories'}>Kembali</Link>
+        </Button>
+      </div>
+      <div className="w-full md:w-[60%] flex flex-col gap-3 h-screen">
         {listIncomes.length > 0 ? (
           listIncomes.map((income) => {
             const category = listCategories.find(cat => cat.name === income.category);
             return(
-            <Card key={income.id} className="w-full p-3 flex flex-row justify-between ">
-              <div className="flex flex-row"> 
-                <div className="flex justify-center items-center">
-                <Button color="primary" variant="flat" className="w-[50px] h-[50px]">
-                  {category?.icon}
-                </Button>
+            <Card key={income._id} className="w-full p-3 flex flex-row justify-between">
+              <div className="w-full flex flex-row justify-between">
+                  <div className="flex flex-col sm:flex-row">
+                    <div className="flex items-center">
+                      <Button color="primary" variant="flat" className="w-[50px] h-[50px]">
+                        {category?.icon}
+                      </Button>
+                      </div>
+                      <div className="px-4">
+                        <h3 className="font-poppins font-semibold text-slate-800">{income.title}</h3>
+                        <p className="flex items-center gap-2"><FaCalendar /> {new Date(income.createdAt).toLocaleDateString()}</p>
+                        <p className="flex items-center gap-2"><RiChat1Fill />{income.description}</p>
+                      </div>
+                    </div>
                 </div>
-                <div className="px-4">
-                  <h3 className="font-poppins font-semibold text-slate-800">{income.title}</h3>
-                  <p className="flex items-center gap-2"><FaCalendar /> {new Date(income.createdAt).toLocaleDateString()}</p>
-                  <p className="flex items-center gap-2"><RiChat1Fill />{income.description}</p>
-                </div>
-              </div>
-              <div className="flex pr-4 justify-right">
-                <p> + Rp. {income.amount}</p>
-              </div>
-              
+                  <div className="flex justify-end w-full">
+                    <p> + Rp. {income.amount}</p>
+                  </div>
+                <div>
+              </div> 
             </Card>
           )})
         ) : (

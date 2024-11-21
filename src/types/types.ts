@@ -17,7 +17,7 @@ export interface TransactionFormInput {
 }
 
 export interface TransactionResponse {
-  id: string;
+  _id: string;
   title: string;
   amount: number;
   category: string;
@@ -29,4 +29,9 @@ export interface TransactionResponse {
 
 export interface RouteParams {
   category?: string; 
+}
+
+export interface AddIncomeProps extends TokenProps {
+  editingIncome: TransactionResponse | null; 
+  setEditingIncome: (income: TransactionResponse | null) => void; 
 }

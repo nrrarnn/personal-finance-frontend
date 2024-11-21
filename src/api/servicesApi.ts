@@ -1,4 +1,3 @@
-import { GrTransaction } from "react-icons/gr";
 import { Category, TransactionResponse } from "../types/types";
 import api from "./api";
 

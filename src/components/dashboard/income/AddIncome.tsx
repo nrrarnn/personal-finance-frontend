@@ -3,44 +3,53 @@ import api from "../../../api/api";
 import withAuth from "../../../hoc/withAuth";
 import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import { useEffect, useState } from "react";
-import { Category, TokenProps, TransactionFormInput } from "../../../types/types";
+import { AddIncomeProps, Category, TransactionFormInput } from "../../../types/types";
 
-
-const AddIncome: React.FC<TokenProps> = ({ token }) => {
+const AddIncome: React.FC<AddIncomeProps> = ({ token, editingIncome, setEditingIncome }) => {
   const [categories, setCategories] = useState<Category[]>([]);
 
   const { handleSubmit, control, formState: { errors }, reset } = useForm<TransactionFormInput>({
     defaultValues: {
       title: "",
       amount: 0,
-      category: "",
+      category: "", 
       description: "",
     },
   });
 
   const getCategories = async () => {
-    try{
+    try {
       const response = await api.get<Category[]>('/categories', {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       })
-      setCategories(response.data)
-    } catch(error) {
-      console.error(error)
+      setCategories(response.data);
+    } catch (error) {
+      console.error(error);
     }
   }
 
   const onSubmit: SubmitHandler<TransactionFormInput> = async (data) => {
     try {
-      const response = await api.post('/income', data, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      console.log("Income added successfully:", response.data);
-      
-      reset();
+      if (editingIncome) {
+        const response = await api.put(`/income/${editingIncome._id}`, data, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        console.log("Income updated successfully:", response.data);
+      } else {
+        const response = await api.post('/income', data, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        console.log("Income added successfully:", response.data);
+      }
+
+      reset();  
+      setEditingIncome(null); 
     } catch (error) {
       console.error("Error adding income:", error);
     }
@@ -49,8 +58,29 @@ const AddIncome: React.FC<TokenProps> = ({ token }) => {
   const incomeCategories = categories.filter(category => category.type === "income");
 
   useEffect(() => {
-    getCategories()
-  },[])
+    getCategories();
+  }, []);
+
+  useEffect(() => {
+    if (editingIncome) {
+      reset({
+        title: editingIncome.title || "",
+        amount: editingIncome.amount || 0,
+        category: editingIncome.category || "", 
+        description: editingIncome.description || "",
+      });
+    } else {
+      console.log("Resetting Form...");
+      reset(
+        {
+          title: "",
+          amount: 0,
+          category: "",
+          description: "",
+        }
+      );
+    }
+  }, [editingIncome, reset]);
 
   return (
     <div className="w-full md:w-[30%] p-3">
@@ -99,20 +129,17 @@ const AddIncome: React.FC<TokenProps> = ({ token }) => {
               placeholder="Select a category"
               aria-label="Category"
               color="primary"
-              items={incomeCategories} 
-              onChange={(selectedValue) => field.onChange(selectedValue)} 
               value={field.value} 
+              onChange={(selectedValue) => field.onChange(selectedValue)} 
             >
-              {(category) => (
+              {incomeCategories.map((category) => (
                 <SelectItem key={category.name} value={category.name}>
                   {category.name}
                 </SelectItem>
-              )}
+              ))}
             </Select>
           )}
         />
-
-
 
         <Controller
           name="description"
@@ -127,7 +154,9 @@ const AddIncome: React.FC<TokenProps> = ({ token }) => {
           )}
         />
 
-        <Button type="submit" color="primary">+ Add Income</Button>
+        <Button type="submit" color="primary">
+          {editingIncome ? "Update Income" : "+ Add Income"}
+        </Button>
       </form>
     </div>
   );

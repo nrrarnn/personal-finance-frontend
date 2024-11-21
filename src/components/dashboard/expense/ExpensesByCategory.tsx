@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import withAuth from "../../../hoc/withAuth";
 import { useEffect, useState } from "react";
 import { Category, TokenProps, TransactionResponse } from "../../../types/types";
@@ -38,15 +38,21 @@ const ExpensesByCategory: React.FC<TokenProps> = ({token}) => {
   return (
     <div>
       <h1>Expenses By Category</h1>
-      <div className="w-full md:w-[60%] flex flex-col gap-3">
+      <div className="py-3">
+        <Button color="primary">
+          <Link to={'/dashboard/categories'}>Kembali</Link>
+      </Button>
+      </div>
+      
+      <div className="w-full md:w-[60%] flex flex-col gap-3 h-screen">
         {listExpenses.length > 0 ? (
           listExpenses.map((expense) => {
             const category = listCategories.find(cat => cat.name === expense.category);
             return(
-            <Card key={expense.id} className="w-full p-3 flex flex-row justify-between ">
+            <Card key={expense._id} className="w-full p-3 flex flex-row justify-between ">
               <div className="flex flex-row"> 
                 <div className="flex justify-center items-center">
-                <Button color="secondary" variant="flat" className="w-[50px] h-[50px]">
+                <Button color="primary" variant="flat" className="w-[50px] h-[50px]">
                   {category?.icon}
                 </Button>
                 </div>

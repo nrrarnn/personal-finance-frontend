@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { Category, TokenProps, TransactionFormInput } from "../../../types/types";
 
 
-const AddExpense: React.FC<TokenProps> = ({ token }) => {
+const AddExpense: React.FC<TokenProps> = ({ token, editingExpense, setEditingExpense }) => {
   const [categories, setCategories] = useState<Category[]>([]);
 
   const { handleSubmit, control, formState: { errors }, reset } = useForm<TransactionFormInput>({
@@ -33,16 +33,25 @@ const AddExpense: React.FC<TokenProps> = ({ token }) => {
 
   const onSubmit: SubmitHandler<TransactionFormInput> = async (data) => {
     try {
-      const response = await api.post('/expense', data, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      console.log("Income added successfully:", response.data);
-      
+      if (editingExpense) {
+        const response = await api.put(`/expense/${editingExpense._id}`, data, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        console.log("Expense updated successfully:", response.data);
+      } else {
+        const response = await api.post('/expense', data, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        console.log("Expense added successfully:", response.data);
+      }
       reset();
+      setEditingExpense(null);
     } catch (error) {
-      console.error("Error adding income:", error);
+      console.error("Error adding Expense:", error);
     }
   };
 
@@ -51,6 +60,24 @@ const AddExpense: React.FC<TokenProps> = ({ token }) => {
   useEffect(() => {
     getCategories()
   },[])
+
+  useEffect(() => {
+    if (editingExpense) {
+      reset({
+        title: editingExpense.title || "",
+        amount: editingExpense.amount || 0,
+        category: editingExpense.category || "", 
+        description: editingExpense.description || "",
+      });
+    } else {
+      reset({
+        title: "",
+        amount: 0,
+        category: "",
+        description: "",
+      });
+    }
+  }, [editingExpense, reset]);
 
   return (
     <div className="w-full md:w-[30%] p-3">
@@ -64,7 +91,7 @@ const AddExpense: React.FC<TokenProps> = ({ token }) => {
               {...field}
               type="text"
               label="Title"
-              color="secondary"
+              color="primary"
               isInvalid={Boolean(fieldState.error)}
               errorMessage={fieldState.error?.message}
             />
@@ -80,7 +107,7 @@ const AddExpense: React.FC<TokenProps> = ({ token }) => {
               {...field}
               type="number"
               label="Amount"
-              color="secondary"
+              color="primary"
               isInvalid={Boolean(fieldState.error)}
               errorMessage={fieldState.error?.message}
               value={field.value.toString()} 
@@ -99,7 +126,7 @@ const AddExpense: React.FC<TokenProps> = ({ token }) => {
               label="Category"
               placeholder="Select a category"
               aria-label="Category"
-              color="secondary"
+              color="primary"
               items={expenseCategories}
               onChange={(selectedValue) => field.onChange(selectedValue)} 
               value={field.value} 
@@ -122,12 +149,14 @@ const AddExpense: React.FC<TokenProps> = ({ token }) => {
               {...field}
               type="text"
               label="Description"
-              color="secondary"
+              color="primary"
             />
           )}
         />
 
-        <Button type="submit" color="secondary">+ Add Expense</Button>
+        <Button type="submit" color="primary">
+          {editingExpense ? "Update Expense" : "Add Expense"}
+        </Button>
       </form>
     </div>
   );
