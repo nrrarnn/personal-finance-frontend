@@ -90,7 +90,7 @@ const ListExpenses: React.FC<TokenProps> = ({token}) => {
             </Card>
           )})
         ) : (
-          <p>No incomes available.</p>
+          <p>No expenses available.</p>
         )}
       </div>
       </div>

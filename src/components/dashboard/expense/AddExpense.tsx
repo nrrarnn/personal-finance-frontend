@@ -3,13 +3,13 @@ import api from "../../../api/api";
 import withAuth from "../../../hoc/withAuth";
 import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import { useEffect, useState } from "react";
-import { Category, TokenProps, TransactionFormInput } from "../../../types/types";
+import { AddExpenseProps, Category, TransactionFormInput } from "../../../types/types";
 
 
-const AddExpense: React.FC<TokenProps> = ({ token, editingExpense, setEditingExpense }) => {
+const AddExpense: React.FC<AddExpenseProps> = ({ token, editingExpense, setEditingExpense }) => {
   const [categories, setCategories] = useState<Category[]>([]);
 
-  const { handleSubmit, control, formState: { errors }, reset } = useForm<TransactionFormInput>({
+  const { handleSubmit, control, reset } = useForm<TransactionFormInput>({
     defaultValues: {
       title: "",
       amount: 0,

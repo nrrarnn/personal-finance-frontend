@@ -48,7 +48,7 @@ const ListCategories: React.FC<TokenProps> = ({token}) => {
             const backgroundColor: string = colors[index % colors.length];
 
             return(  
-              <Button color={backgroundColor} key={category._id} className="w-[80px] h-[80px]" variant="flat"> 
+              <Button color={backgroundColor as "primary" | "danger" | "success" | "warning" | "default"} key={category._id} className="w-[80px] h-[80px]" variant="flat"> 
                 <Link to={`/dashboard/incomes/${category.name}`} className="p-3">
                   <p className="text-xl">{category.icon}</p>
                   <p className="text-[13px]">{category.name}</p>
@@ -63,7 +63,7 @@ const ListCategories: React.FC<TokenProps> = ({token}) => {
           expenseCategories.map((category,index) => {
           const backgroundColor: string = colors[index % colors.length];
           return(
-          <Button key={category._id} color={backgroundColor} className={`w-[80px] h-[80px]`} variant="flat"> 
+          <Button key={category._id} color={backgroundColor as "primary" | "danger" | "success" | "warning" | "default"} className={`w-[80px] h-[80px]`} variant="flat"> 
             <Link to={`/dashboard/expenses/${category.name}`} className="p-3">
               <p className="text-xl">{category.icon}</p>
               {truncateText(category.name, 9)}

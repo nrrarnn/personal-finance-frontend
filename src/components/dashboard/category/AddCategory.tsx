@@ -20,7 +20,7 @@ interface TypeSelect {
   label: string;
 }
 const AddCategory: React.FC<AddCategoryProps> = ({isOpen, onOpenChange, token}) => {
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<CategoryFormInput>();
+  const { register, handleSubmit, reset } = useForm<CategoryFormInput>();
   const typeOptions: TypeSelect[] = [
     { value: "expense", label: "Expense" },
     { value: "income", label: "Income" }

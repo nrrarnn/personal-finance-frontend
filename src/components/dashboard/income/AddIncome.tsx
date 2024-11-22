@@ -8,7 +8,7 @@ import { AddIncomeProps, Category, TransactionFormInput } from "../../../types/t
 const AddIncome: React.FC<AddIncomeProps> = ({ token, editingIncome, setEditingIncome }) => {
   const [categories, setCategories] = useState<Category[]>([]);
 
-  const { handleSubmit, control, formState: { errors }, reset } = useForm<TransactionFormInput>({
+  const { handleSubmit, control, reset } = useForm<TransactionFormInput>({
     defaultValues: {
       title: "",
       amount: 0,

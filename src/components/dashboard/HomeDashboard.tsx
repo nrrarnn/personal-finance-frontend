@@ -1,37 +1,16 @@
+"use client"
 import { useEffect, useState } from "react";
 import api from "../../api/api";
 import withAuth from "../../hoc/withAuth"
-import { Avatar, Button, Card, CardBody, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ScrollShadow } from "@nextui-org/react";
+import { Avatar, Button, Card, CardBody, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ScrollShadow, Tab, Tabs } from "@nextui-org/react";
 import { Link, useNavigate } from "react-router-dom";
 import { truncateText } from "../../data/functionTruncate";
 import { colors } from "../../data/colors";
 import { Category, TransactionResponse } from "../../types/types";
-import {Chart as ChartJs, 
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend,
-    ArcElement,
-} from 'chart.js'
-import { Bar } from 'react-chartjs-2'
+import { VictoryTheme, VictoryPie } from "victory";
 import { useDispatch } from "react-redux";
 import { logout } from "../../store/authSlice";
 import { BiLogOut } from "react-icons/bi";
-
-ChartJs.register(
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend,
-    ArcElement,
-)
-
 
 interface DashboardProps {
   token: string | null;
@@ -44,8 +23,6 @@ interface BalanceResponse {
   totalIncome: number;
   totalExpense: number;
 }
-
-
 
 const HomeDashboard: React.FC<DashboardProps> = ({token, username,email}) => {
   const [balance, setBalance] = useState<number>(0);
@@ -62,7 +39,6 @@ const HomeDashboard: React.FC<DashboardProps> = ({token, username,email}) => {
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
 
-  // Fungsi untuk menangani logout
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('username');
@@ -156,62 +132,29 @@ const HomeDashboard: React.FC<DashboardProps> = ({token, username,email}) => {
 
 const sortedTransactions = enhancedTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-const dateFormat = (dateString: string) => {
-  const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short', 
-    day: 'numeric', 
-  });
-};
 
 
-const data = {
-        labels: listIncomes.map((inc) =>{
-            const {createdAt} = inc
-            return dateFormat(createdAt)
-        }),
-        datasets: [
-            {
-                label: 'Income',
-                data: [
-                    ...listIncomes.map((income) => {
-                        const {amount} = income
-                        return amount
-                    })
-                ],
-                backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1,
-            },
-            {
-                label: 'Expenses',
-                data: [
-                    ...listExpenses.map((expense) => {
-                        const {amount} = expense
-                        return amount
-                    })
-                ],
-                backgroundColor: 'rgba(255, 99, 132, 0.6)',
-                borderColor: 'rgba(255, 99, 132, 1)',
-                borderWidth: 1,
-            }
-        ]
-    }
+const dataSample = listIncomes.reduce((acc, category) => {
+  if (acc[category.category]) {
+    acc[category.category].y += category.amount;
+  } else {
+    acc[category.category] = { x: category.category, y: category.amount };
+  }
+  return acc;
+}, {});
 
-  const options = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: 'top' as const,
-    },
-    title: {
-      display: true,
-      text: 'Income and Expense Summary',
-    },
-  },
-}
+const result = Object.values(dataSample);
 
+const dataExpenses = listExpenses.reduce((acc, category) => {
+  if (acc[category.category]) {
+    acc[category.category].y += category.amount;
+  } else {
+    acc[category.category] = { x: category.category, y: category.amount };
+  }
+  return acc;
+}, {});
+
+const resultExpenses = Object.values(dataExpenses);
 
   return (
     <section className="w-full bg-[#f0f7ff] pb-32 ">
@@ -340,9 +283,32 @@ const data = {
               </div>
             </div>
             <div className="w-full md:w-[50%]">
-              <div className="w-full flex justify-center p-6 ">
-                  <div className="flex p-[1rem] border rounded-[20px] h-[100%] bg-white">
-                    <Bar data={data} options={options} />
+              <div className="w-full flex justify-center flex-col p-6 ">
+                <Tabs aria-label="Options">
+                  <Tab key="incomes" title="Incomes">
+                    <Card>
+                        <VictoryPie
+                        startAngle={90}
+                        endAngle={450}
+                        data={result}
+                        theme={VictoryTheme.clean}
+                      />
+                    </Card>  
+                  </Tab>
+                  <Tab key="expense" title="Expenses">
+                    <Card>
+                      <VictoryPie
+                      startAngle={90}
+                      endAngle={450}
+                      data={resultExpenses}
+                      theme={VictoryTheme.clean}
+                    />
+                    </Card>  
+                  </Tab>
+                </Tabs>
+                  
+                  
+                    <div>
                   </div>
               </div>
             </div>
