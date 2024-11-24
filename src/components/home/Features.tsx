@@ -38,8 +38,8 @@ const Features = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"  data-aos="fade-up">
             {features.map((feature, index) => (
               <div key={index} className="hover-card bg-white p-6 rounded-lg shadow-lg flex flex-col items-center text-center">
-                <div className="bg-blue-400 text-white w-16 h-16 flex items-center justify-center rounded-full mb-4">
-                  <feature.Icon className="text-3xl" />
+                <div className="bg-blue-400 text-3xl text-white w-16 h-16 flex items-center justify-center rounded-full mb-4">
+                  <feature.Icon />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
                 <p className="text-gray-600">{feature.description}</p>

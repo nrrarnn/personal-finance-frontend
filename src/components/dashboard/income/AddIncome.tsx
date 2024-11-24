@@ -1,11 +1,16 @@
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import api from "../../../api/api";
-import withAuth from "../../../hoc/withAuth";
 import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import { useEffect, useState } from "react";
-import { AddIncomeProps, Category, TransactionFormInput } from "../../../types/types";
+import { Category,  TransactionFormInput, TransactionResponse } from "../../../types/types";
 
-const AddIncome: React.FC<AddIncomeProps> = ({ token, editingIncome, setEditingIncome }) => {
+interface AddIncomeProps {
+  token: string | null;
+  editingTransaction: TransactionResponse | null; 
+  setEditingTransaction: (transaction: TransactionResponse | null) => void; 
+}
+
+const AddIncome: React.FC<AddIncomeProps> = ({ editingTransaction, setEditingTransaction, token}) => {
   const [categories, setCategories] = useState<Category[]>([]);
 
   const { handleSubmit, control, reset } = useForm<TransactionFormInput>({
@@ -32,8 +37,8 @@ const AddIncome: React.FC<AddIncomeProps> = ({ token, editingIncome, setEditingI
 
   const onSubmit: SubmitHandler<TransactionFormInput> = async (data) => {
     try {
-      if (editingIncome) {
-        const response = await api.put(`/income/${editingIncome._id}`, data, {
+      if (editingTransaction) {
+        const response = await api.put(`/income/${editingTransaction._id}`, data, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -49,7 +54,7 @@ const AddIncome: React.FC<AddIncomeProps> = ({ token, editingIncome, setEditingI
       }
 
       reset();  
-      setEditingIncome(null); 
+      setEditingTransaction(null); 
     } catch (error) {
       console.error("Error adding income:", error);
     }
@@ -62,12 +67,12 @@ const AddIncome: React.FC<AddIncomeProps> = ({ token, editingIncome, setEditingI
   }, []);
 
   useEffect(() => {
-    if (editingIncome) {
+    if (editingTransaction) {
       reset({
-        title: editingIncome.title || "",
-        amount: editingIncome.amount || 0,
-        category: editingIncome.category || "", 
-        description: editingIncome.description || "",
+        title: editingTransaction.title || "",
+        amount: editingTransaction.amount || 0,
+        category: editingTransaction.category || "", 
+        description: editingTransaction.description || "",
       });
     } else {
       console.log("Resetting Form...");
@@ -80,7 +85,7 @@ const AddIncome: React.FC<AddIncomeProps> = ({ token, editingIncome, setEditingI
         }
       );
     }
-  }, [editingIncome, reset]);
+  }, [editingTransaction, reset]);
 
   return (
     <div className="w-full md:w-[30%] p-3">
@@ -155,11 +160,11 @@ const AddIncome: React.FC<AddIncomeProps> = ({ token, editingIncome, setEditingI
         />
 
         <Button type="submit" color="primary">
-          {editingIncome ? "Update Income" : "+ Add Income"}
+          {editingTransaction ? "Update Income" : "+ Add Income"}
         </Button>
       </form>
     </div>
   );
 };
 
-export default withAuth(AddIncome);
+export default AddIncome;

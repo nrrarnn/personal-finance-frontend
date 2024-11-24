@@ -13,7 +13,7 @@ import api from "../../../api/api";
 const ListIncome: React.FC<TokenProps> = ({token}) => {
   const [listIncomes, setListIncomes] = useState<TransactionResponse[]>([]);
   const [listCategories, setListCategories] = useState<Category[]>([]);
-  const [editingIncome, setEditingIncome] = useState<TransactionResponse[] | null>(null);
+  const [editingIncome, setEditingIncome] = useState<TransactionResponse | null>(null);
 
   const handleDelete = async (id: string) => {
     try {
@@ -55,7 +55,7 @@ const ListIncome: React.FC<TokenProps> = ({token}) => {
     <div className="pb-20">
       <h1 className="text-3xl font-bold font-poppins">Incomes</h1>
       <div className="flex flex-wrap w-full pt-16 gap-5">
-        <AddIncome editingIncome={editingIncome} setEditingIncome={setEditingIncome}/>
+        <AddIncome editingTransaction={editingIncome} setEditingTransaction={setEditingIncome} token={token}/>
         <div className="w-full md:w-[60%] flex flex-col gap-3">
         {listIncomes.length > 0 ? (
           listIncomes.map((income) => {

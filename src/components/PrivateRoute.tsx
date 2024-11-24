@@ -1,8 +1,12 @@
 import { useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
 import { RootState } from '../store/store'; 
+import { ReactNode } from 'react';
 
-const PrivateRoute = ({ children }) => {
+interface MyComponentProps {
+    children: ReactNode; 
+}
+const PrivateRoute: React.FC<MyComponentProps> = ({ children }) => {
   const token = useSelector((state: RootState) => state.auth.token);
   
   if (!token) {

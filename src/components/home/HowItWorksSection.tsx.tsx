@@ -51,8 +51,8 @@ const HowItWorksSection: React.FC = () => {
           <ul className="space-y-4">
           {howItWorks.map((item, index) => (
               <li key={index} className="flex flex-row items-center justify-start gap-2">
-                <div className="flex items-center p-3 bg-blue-400 rounded-full">
-                  <item.Icon className="text-white text-2xl" />
+                <div className="flex items-center text-white text-2xl p-3 bg-blue-400 rounded-full">
+                  <item.Icon/>
                 </div>
                 <div className="flex flex-col">
                 <span className="text-md font-semibold font-poppins">{item.title}</span>

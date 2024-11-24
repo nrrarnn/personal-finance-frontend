@@ -55,7 +55,7 @@ const ListExpenses: React.FC<TokenProps> = ({token}) => {
     <div className="pb-20">
       <h1 className="text-3xl font-bold font-poppins">Expenses</h1>
       <div className="flex flex-wrap w-full pt-16 gap-5">
-        <AddExpense editingExpense={editingExpense} setEditingExpense={setEditingExpense}/>
+        <AddExpense editingExpense={editingExpense} setEditingExpense={setEditingExpense} token={token}/>
         <div className="w-full md:w-[60%] flex flex-col gap-3">
         {listExpenses.length > 0 ? (
           listExpenses.map((expense) => {

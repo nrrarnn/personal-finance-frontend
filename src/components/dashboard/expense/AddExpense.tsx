@@ -1,10 +1,14 @@
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import api from "../../../api/api";
-import withAuth from "../../../hoc/withAuth";
 import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import { useEffect, useState } from "react";
-import { AddExpenseProps, Category, TransactionFormInput } from "../../../types/types";
+import { Category, TransactionFormInput, TransactionResponse } from "../../../types/types";
 
+export interface AddExpenseProps {
+  token: string | null;
+  editingExpense: TransactionResponse | null; 
+  setEditingExpense: (expense: TransactionResponse | null) => void; 
+}
 
 const AddExpense: React.FC<AddExpenseProps> = ({ token, editingExpense, setEditingExpense }) => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -162,4 +166,4 @@ const AddExpense: React.FC<AddExpenseProps> = ({ token, editingExpense, setEditi
   );
 };
 
-export default withAuth(AddExpense);
+export default AddExpense;

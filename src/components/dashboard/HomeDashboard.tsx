@@ -6,7 +6,7 @@ import { Avatar, Button, Card, CardBody, Dropdown, DropdownItem, DropdownMenu, D
 import { Link, useNavigate } from "react-router-dom";
 import { truncateText } from "../../data/functionTruncate";
 import { colors } from "../../data/colors";
-import { Category, TransactionResponse } from "../../types/types";
+import { Category, ChartData, TransactionResponse } from "../../types/types";
 import { VictoryTheme, VictoryPie } from "victory";
 import { useDispatch } from "react-redux";
 import { logout } from "../../store/authSlice";
@@ -24,7 +24,7 @@ interface BalanceResponse {
   totalExpense: number;
 }
 
-const HomeDashboard: React.FC<DashboardProps> = ({token, username,email}) => {
+const HomeDashboard: React.FC<DashboardProps> = ({token, username, email}) => {
   const [balance, setBalance] = useState<number>(0);
   const [totalIncome, setTotalIncome] = useState<number >(0);
   const [totalExpense, setTotalExpense] = useState<number >(0);
@@ -130,11 +130,13 @@ const HomeDashboard: React.FC<DashboardProps> = ({token, username,email}) => {
   })
 ];
 
-const sortedTransactions = enhancedTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+const sortedTransactions = enhancedTransactions.sort(
+  (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+);
 
 
 
-const dataSample = listIncomes.reduce((acc, category) => {
+const dataSample = listIncomes.reduce<ChartData>((acc, category) => {
   if (acc[category.category]) {
     acc[category.category].y += category.amount;
   } else {
@@ -145,7 +147,7 @@ const dataSample = listIncomes.reduce((acc, category) => {
 
 const result = Object.values(dataSample);
 
-const dataExpenses = listExpenses.reduce((acc, category) => {
+const dataExpenses = listExpenses.reduce<ChartData>((acc, category) => {
   if (acc[category.category]) {
     acc[category.category].y += category.amount;
   } else {
@@ -247,7 +249,7 @@ const resultExpenses = Object.values(dataExpenses);
                     listCategories.slice(0, 6).map((category,index) => {
                     const backgroundColor: string = colors[index % colors.length];
                     return(
-                    <Button key={category._id} color={backgroundColor} className={`w-[80px] h-[80px]`} variant="flat"> 
+                    <Button key={category._id} color={backgroundColor as "primary"} className={`w-[80px] h-[80px]`} variant="flat"> 
                       <Link to={`/dashboard/${category.type == 'income' ? 'incomes' : 'expenses'}/${category.name}`} className="p-3">
                         <p className="text-xl">{category.icon}</p>
                         {truncateText(category.name, 9)}
@@ -315,7 +317,6 @@ const resultExpenses = Object.values(dataExpenses);
           </div>
         </div>
       </div>
-
     </section>
   )
 } 

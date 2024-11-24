@@ -31,11 +31,6 @@ export interface RouteParams {
   category?: string; 
 }
 
-export interface AddIncomeProps extends TokenProps {
-  editingIncome: TransactionResponse | null; 
-  setEditingIncome: (income: TransactionResponse | null) => void; 
-}
-export interface AddExpenseProps extends TokenProps {
-  editingExpense: TransactionResponse | null; 
-  setEditingExpense: (expense: TransactionResponse | null) => void; 
+export interface ChartData {
+  [key: string]: { x: string; y: number };
 }

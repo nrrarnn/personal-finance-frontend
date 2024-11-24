@@ -1,5 +1,5 @@
 import CustomerReviews from "../components/home/CustomerReviews.tsx"
-import Faq from "../components/home/FAQ.tsx"
+import Faq from "../components/home/Faq.tsx"
 import Features from "../components/home/Features.tsx"
 import Footer from "../components/home/Footer.tsx"
 import Header from "../components/home/Header"
