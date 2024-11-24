@@ -1,16 +1,19 @@
 import { useEffect, useState } from "react";
-import withAuth from "../../../hoc/withAuth";
 import { Button, Card } from "@nextui-org/react";
 import { FaCalendar } from "react-icons/fa6";
 import { RiChat1Fill } from "react-icons/ri";
 import AddExpense from "./AddExpense";
-import { Category, TokenProps, TransactionResponse } from "../../../types/types";
+import { Category, TransactionResponse } from "../../../types/types";
 import { getCategories, getExpenses } from "../../../api/servicesApi";
 import { CiEdit } from "react-icons/ci";
 import { MdDelete } from "react-icons/md";
 import api from "../../../api/api";
+import { RootState } from "../../../store/store";
+import { useSelector } from "react-redux";
 
-const ListExpenses: React.FC<TokenProps> = ({token}) => {
+const ListExpenses = () => {
+  const token = useSelector((state: RootState) => state.auth.token);
+
   const [listExpenses, setListExpenses] = useState<TransactionResponse[]>([]);
   const [listCategories, setListCategories] = useState<Category[]>([]);
   const [editingExpense, setEditingExpense] = useState<TransactionResponse | null>(null);
@@ -99,4 +102,4 @@ const ListExpenses: React.FC<TokenProps> = ({token}) => {
   )
 }
 
-export default withAuth(ListExpenses)
+export default ListExpenses;

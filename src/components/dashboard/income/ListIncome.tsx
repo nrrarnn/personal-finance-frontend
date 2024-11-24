@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
-import withAuth from "../../../hoc/withAuth";
 import { Button, Card } from "@nextui-org/react";
 import AddIncome from "./AddIncome";
 import { FaCalendar } from "react-icons/fa6";
 import { RiChat1Fill } from "react-icons/ri";
-import { Category, TokenProps, TransactionResponse } from "../../../types/types";
+import { Category, TransactionResponse } from "../../../types/types";
 import { getCategories, getIncomes } from "../../../api/servicesApi";
 import { CiEdit } from "react-icons/ci";
 import { MdDelete } from "react-icons/md";
 import api from "../../../api/api";
+import { RootState } from "../../../store/store";
+import { useSelector } from "react-redux";
 
-const ListIncome: React.FC<TokenProps> = ({token}) => {
+const ListIncome= () => {
+  const token = useSelector((state: RootState) => state.auth.token);
   const [listIncomes, setListIncomes] = useState<TransactionResponse[]>([]);
   const [listCategories, setListCategories] = useState<Category[]>([]);
   const [editingIncome, setEditingIncome] = useState<TransactionResponse | null>(null);
@@ -99,4 +101,4 @@ const ListIncome: React.FC<TokenProps> = ({token}) => {
   )
 }
 
-export default withAuth(ListIncome)
+export default ListIncome;

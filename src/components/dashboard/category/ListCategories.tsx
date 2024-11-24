@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
 import api from "../../../api/api"
-import withAuth from "../../../hoc/withAuth"
 import { Button, useDisclosure } from "@nextui-org/react";
 import AddCategory from "./AddCategory";
 import { Link } from "react-router-dom";
 import {colors } from "../../../data/colors";
 import { truncateText } from "../../../data/functionTruncate";
-import { Category, TokenProps } from "../../../types/types";
+import { Category } from "../../../types/types";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store/store";
 
 
-const ListCategories: React.FC<TokenProps> = ({token}) => {
+const ListCategories = () => {
+  const token = useSelector((state: RootState) => state.auth.token);
   const [ListCategories, setListCategories] = useState<Category[]>([]);
   
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
@@ -77,4 +79,4 @@ const ListCategories: React.FC<TokenProps> = ({token}) => {
   )
 }
 
-export default withAuth(ListCategories)
+export default ListCategories

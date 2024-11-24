@@ -1,13 +1,15 @@
 import { Link, useParams } from "react-router-dom"
-import withAuth from "../../../hoc/withAuth";
 import { useEffect, useState } from "react";
-import { Category, TokenProps, TransactionResponse } from "../../../types/types";
+import { Category,  TransactionResponse } from "../../../types/types";
 import { getByCategories, getCategories } from "../../../api/servicesApi";
 import { Button, Card } from "@nextui-org/react";
 import { FaCalendar } from "react-icons/fa6";
 import { RiChat1Fill } from "react-icons/ri";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store/store";
 
-const IncomesByCategory: React.FC<TokenProps> = ({token}) => {
+const IncomesByCategory = () => {
+  const token = useSelector((state: RootState) => state.auth.token);
   const { category } = useParams<Record<string, string | undefined>>();
   const transaction: string = 'incomes'
   const [listIncomes, setListIncomes] = useState<TransactionResponse[]>([]);
@@ -79,4 +81,4 @@ const IncomesByCategory: React.FC<TokenProps> = ({token}) => {
   )
 }
 
-export default withAuth(IncomesByCategory)
+export default IncomesByCategory;

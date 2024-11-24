@@ -1,22 +1,18 @@
 "use client"
 import { useEffect, useState } from "react";
 import api from "../../api/api";
-import withAuth from "../../hoc/withAuth"
 import { Avatar, Button, Card, CardBody, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ScrollShadow, Tab, Tabs } from "@nextui-org/react";
 import { Link, useNavigate } from "react-router-dom";
 import { truncateText } from "../../data/functionTruncate";
 import { colors } from "../../data/colors";
 import { Category, ChartData, TransactionResponse } from "../../types/types";
 import { VictoryTheme, VictoryPie } from "victory";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../store/authSlice";
 import { BiLogOut } from "react-icons/bi";
+import { RootState } from "../../store/store";
 
-interface DashboardProps {
-  token: string | null;
-  username: string | null; 
-  email : string | null;
-}
+
 
 interface BalanceResponse {
   balance: number;
@@ -24,7 +20,11 @@ interface BalanceResponse {
   totalExpense: number;
 }
 
-const HomeDashboard: React.FC<DashboardProps> = ({token, username, email}) => {
+const HomeDashboard = () => {
+  const token = useSelector((state: RootState) => state.auth.token);
+  const username = useSelector((state: RootState) => state.auth.username);
+  const email = useSelector((state: RootState) => state.auth.email);
+
   const [balance, setBalance] = useState<number>(0);
   const [totalIncome, setTotalIncome] = useState<number >(0);
   const [totalExpense, setTotalExpense] = useState<number >(0);
@@ -323,4 +323,4 @@ const resultExpenses = Object.values(dataExpenses);
 
 
 
-export default withAuth(HomeDashboard)
+export default HomeDashboard
