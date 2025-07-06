@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { CiMenuFries } from "react-icons/ci";
 import {  FaTimes } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const router = useNavigate();
 
   const menuItems = [
     { name: "Home", href: "#home" },
@@ -49,8 +51,8 @@ export default function Header() {
 
           {/* Desktop Auth Buttons */}
           <div className="hidden md:flex items-center space-x-3">
-            <button className="px-5 py-2 text-gray-700 hover:text-gray-900 font-medium transition-all duration-200 rounded-lg hover:bg-gray-50">Login</button>
-            <button className="group relative px-6 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium rounded-lg hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-200 overflow-hidden">
+            <button className="px-5 py-2 text-gray-700 hover:text-gray-900 font-medium transition-all duration-200 rounded-lg hover:bg-gray-50" onClick={() => router("/login")}>Login</button>
+            <button className="group relative px-6 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium rounded-lg hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-200 overflow-hidden" onClick={() => router("/signup")}>
               <span className="relative z-10 flex items-center space-x-2">
                 <span>Sign Up</span>
               </span>

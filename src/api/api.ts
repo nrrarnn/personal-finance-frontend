@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://personal-finance-api-wine.vercel.app/api/v1', 
+  baseURL: import.meta.env.VITE_BASE_URL ,
   headers: {
     'Content-Type': 'application/json',
   },
