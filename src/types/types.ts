@@ -34,3 +34,9 @@ export interface RouteParams {
 export interface ChartData {
   [key: string]: { x: string; y: number };
 }
+
+export interface BalanceResponse {
+  balance: number;
+  totalIncome: number;
+  totalExpense: number;
+}

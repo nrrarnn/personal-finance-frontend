@@ -1,32 +1,35 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button, Card } from "@nextui-org/react";
 import AddIncome from "./AddIncome";
 import { FaCalendar } from "react-icons/fa6";
 import { RiChat1Fill } from "react-icons/ri";
-import { Category, TransactionResponse } from "../../../types/types";
-import { getCategories, getIncomes } from "../../../api/servicesApi";
+import { TransactionResponse } from "../../../types/types";
 import { CiEdit } from "react-icons/ci";
 import { MdDelete } from "react-icons/md";
 import api from "../../../api/api";
 import { RootState } from "../../../store/store";
 import { useSelector } from "react-redux";
+import { useCategories, useIncomes } from "../../../hooks/useTransactions";
+import { useQueryClient } from "@tanstack/react-query";
 
-const ListIncome= () => {
+const ListIncome = () => {
   const token = useSelector((state: RootState) => state.auth.token);
-  const [listIncomes, setListIncomes] = useState<TransactionResponse[]>([]);
-  const [listCategories, setListCategories] = useState<Category[]>([]);
+  const { data: listIncomes = [], isLoading: loadingIncomes } = useIncomes(token!);
+  const { data: listCategories = [], isLoading: loadingCategories } = useCategories(token!);
   const [editingIncome, setEditingIncome] = useState<TransactionResponse | null>(null);
+
+  const queryClient = useQueryClient();
 
   const handleDelete = async (id: string) => {
     try {
       await api.delete(`/income/${id}`, {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
-      setListIncomes(listIncomes.filter(income => income._id !== id));
+      queryClient.invalidateQueries({ queryKey: ["incomes"] });
     } catch (error) {
-      console.error('Error deleting expense:', error);
+      console.error("Error deleting expense:", error);
     }
   };
 
@@ -34,71 +37,118 @@ const ListIncome= () => {
     setEditingIncome(income);
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (token) {
-        try {
-          const [incomes, categories] = await Promise.all([
-            getIncomes(token),
-            getCategories(token)
-          ]);
-          setListIncomes(incomes);
-          setListCategories(categories);
-        } catch (error) {
-          console.error('Error loading data:', error);
-        }
-      }
-    };
-
-    fetchData();
-  }, [token, listCategories, listIncomes]);
+  if (loadingIncomes || loadingCategories) return <div className="text-center py-16">Loading...</div>;
 
   return (
-    <div className="pb-20">
-      <h1 className="text-3xl font-bold font-poppins">Incomes</h1>
-      <div className="flex flex-wrap w-full pt-16 gap-5">
-        <AddIncome editingTransaction={editingIncome} setEditingTransaction={setEditingIncome} token={token}/>
-        <div className="w-full md:w-[60%] flex flex-col gap-3">
-        {listIncomes.length > 0 ? (
-          listIncomes.map((income) => {
-            const category = listCategories.find(cat => cat.name === income.category);
-            return(
-            <Card key={income._id} className="w-full p-3 flex flex-row justify-between">
-              <div className="w-full flex flex-row justify-between">
-                <div className="flex flex-col sm:flex-row">
-                  <div className="flex items-center">
-                    <Button color="primary" variant="flat" className="w-[50px] h-[50px]">
-                      {category?.icon}
-                    </Button>
-                    </div>
-                    <div className="sm:ml-3 ">
-                      <h3 className="font-poppins font-semibold text-slate-800">{income.title}</h3>
-                      <p className="flex items-center gap-2"><FaCalendar /> {new Date(income.createdAt).toLocaleDateString()}</p>
-                      <p className="flex items-center gap-2"><RiChat1Fill />{income.description}</p>
-                    </div>
-                  </div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 pb-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold font-poppins bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent mb-2">Income Management</h1>
+          <p className="text-gray-600 text-lg">Track and manage your income sources</p>
+        </div>
+
+        <div className="flex flex-col lg:flex-row gap-8">
+          <div className="lg:w-[35%]">
+            <div className="sticky top-8">
+              <AddIncome editingTransaction={editingIncome} setEditingTransaction={setEditingIncome} token={token} />
+            </div>
+          </div>
+
+          <div className="lg:w-[65%]">
+            <div className="mb-6 flex items-center justify-between">
+              <h2 className="text-2xl font-semibold text-gray-800">Recent Incomes</h2>
+              <div className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+                {listIncomes.length} {listIncomes.length === 1 ? "item" : "items"}
+              </div>
+            </div>
+
+            {listIncomes.length > 0 ? (
+              <div className="space-y-4">
+                {listIncomes.map((income, index) => {
+                  const category = listCategories.find((cat) => cat.name === income.category);
+                  return (
+                    <Card
+                      key={income._id}
+                      className="group hover:shadow-xl shadow-gray-400/20 hover:shadow-gray-200 transition-all duration-300 border-0 bg-white/80 backdrop-blur-sm hover:bg-white/90 hover:scale-[1.02] animate-fade-in"
+                      style={{
+                        animationDelay: `${index * 0.1}s`,
+                      }}
+                    >
+                      <div className="p-6">
+                        <div className="flex items-start justify-between">
+                          <div className="flex items-start space-x-4 flex-1">
+                            <div className="relative">
+                              <div className="w-14 h-14 bg-gradient-to-br from-green-400 to-blue-500 rounded-2xl flex items-center justify-center text-white text-xl shadow-lg group-hover:shadow-xl transition-shadow duration-300">
+                                {category?.icon || "💰"}
+                              </div>
+                              <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full flex items-center justify-center">
+                                <span className="text-xs text-white font-bold">+</span>
+                              </div>
+                            </div>
+
+                            <div className="flex-1 min-w-0">
+                              <h3 className="font-poppins font-semibold text-lg text-gray-800 mb-1 truncate">{income.title}</h3>
+
+                              <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-2">
+                                <div className="flex items-center gap-1.5">
+                                  <FaCalendar className="text-blue-500" />
+                                  <span>
+                                    {new Date(income.createdAt).toLocaleDateString("id-ID", {
+                                      day: "numeric",
+                                      month: "short",
+                                      year: "numeric",
+                                    })}
+                                  </span>
+                                </div>
+                              </div>
+
+                              {income.description && (
+                                <div className="flex items-start gap-1.5 text-sm text-gray-600">
+                                  <RiChat1Fill className="text-green-500 mt-0.5 flex-shrink-0" />
+                                  <span className="line-clamp-2">{income.description}</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="flex items-start gap-4 ml-4">
+                            <div className="text-right">
+                              <div className="text-xl font-bold text-green-600 mb-1">+Rp {income.amount.toLocaleString("id-ID")}</div>
+                              <div className="text-xs text-gray-500 uppercase tracking-wide">Income</div>
+                            </div>
+
+                            <div className="flex gap-2 opacity-100 transition-opacity duration-300">
+                              <Button size="sm" variant="flat" color="primary" className="min-w-0 w-10 h-10 p-0 hover:scale-110 transition-transform duration-200" onClick={() => handleEdit(income)}>
+                                <CiEdit className="text-lg" />
+                              </Button>
+                              <Button size="sm" variant="flat" color="danger" className="min-w-0 w-10 h-10 p-0 hover:scale-110 transition-transform duration-200" onClick={() => handleDelete(income._id)}>
+                                <MdDelete className="text-lg" />
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </Card>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="text-center py-16">
+                <div className="w-24 h-24 bg-gradient-to-br from-blue-100 to-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <span className="text-4xl">💰</span>
                 </div>
-                <div className="flex justify-end pr-3 w-full">
-                  <p> + Rp. {income.amount}</p>
+                <h3 className="text-xl font-semibold text-gray-800 mb-2">No incomes yet</h3>
+                <p className="text-gray-600 mb-6">Start by adding your first income source</p>
+                <div className="w-full max-w-md mx-auto h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-blue-400 to-green-400 rounded-full animate-pulse"></div>
                 </div>
-                <div className="block">
-                  <div className="flex flex-col gap-2">
-                    <button className="px-3 py-3 rounded-xl text-white bg-blue-400" onClick={() => handleEdit(income)}><CiEdit /></button>
-                    <button className="px-3 py-3 rounded-xl text-white bg-red-400" onClick={() => handleDelete(income._id)}><MdDelete /></button>
-                  </div>
-                </div>
-              <div>
-            </div> 
-            </Card>
-          )})
-        ) : (
-          <p>No incomes available.</p>
-        )}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
-      </div>
-      
     </div>
-  )
-}
+  );
+};
 
 export default ListIncome;

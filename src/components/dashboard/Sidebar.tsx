@@ -1,95 +1,112 @@
-import { Button, Divider, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@nextui-org/react";
-import { FaHome, FaWallet } from "react-icons/fa";
-import { useDispatch } from "react-redux";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { logout } from "../../store/authSlice";
-import { BiLogOut, BiSolidCategory } from "react-icons/bi";
-import { FaMoneyBills } from "react-icons/fa6";
 import { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { FiHome, FiCreditCard, FiGrid, FiLogOut, FiX, FiCheck, FiChevronRight, FiTrendingUp } from "react-icons/fi";
 
 
 const Sidebar = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const location = useLocation();
 
-  const openModal = () => setIsOpen(true);
-  const closeModal = () => setIsOpen(false);
+  const openLogoutModal = () => setIsLogoutModalOpen(true);
+  const closeLogoutModal = () => setIsLogoutModalOpen(false);
 
-  // Fungsi untuk menangani logout
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('username');
-    localStorage.removeItem('email');
-    dispatch(logout()); 
-    setIsOpen(false);
-    navigate('/');
+    localStorage.removeItem("token");
+    localStorage.removeItem("username");
+    localStorage.removeItem("email");
+    setIsLogoutModalOpen(false);
+    navigate("/");
   };
 
+  const menuItems = [
+    { path: "/dashboard/home", label: "Dashboard", icon: FiHome },
+    { path: "/dashboard/incomes", label: "Income", icon: FiTrendingUp },
+    { path: "/dashboard/expenses", label: "Expenses", icon: FiCreditCard },
+    { path: "/dashboard/categories", label: "Categories", icon: FiGrid },
+  ];
+
   return (
-    <div className="flex flex-col md:flex-row">
-      <div className={`fixed left-0 top-0 h-screen w-[200px] bg-indigo-600 text-white hidden md:flex flex-col py-6 px-6`}>
-        <h1 className="text-2xl font-extrabold mb-6 p-4 text-center">SaldaQ</h1>
-        <Divider className="bg-slate-100 mb-5 opacity-60"/>
-        <Link to="/dashboard/home" className={`p-4 ${location.pathname === "/dashboard/home" ? "bg-indigo-700" : ""} hover:bg-indigo-700 rounded-lg`}>
-          <FaHome className="inline mr-2" /> Home
-        </Link>
-        <Link to={'/dashboard/incomes'} className={`p-4 ${location.pathname === "/dashboard/incomes" ? "bg-indigo-700" : ""} hover:bg-indigo-700 rounded-lg`}>
-          <FaWallet className="inline mr-2" /> Income
-        </Link>
-        <Link to={'/dashboard/expenses'} className={`p-4 ${location.pathname === "/dashboard/expenses" ? "bg-indigo-700" : ""} hover:bg-indigo-700 rounded-lg`}>
-          <FaMoneyBills className="inline mr-2" /> Expense
-        </Link>
-        <Link to={'/dashboard/categories'} className={`p-4 ${location.pathname === "/dashboard/categories" ? "bg-indigo-700" : ""} hover:bg-indigo-700 rounded-lg`}>
-          <BiSolidCategory className="inline mr-2" /> Category
-        </Link>
-        <div className="mt-auto px-4">
-          <button onClick={openModal} className="px-2 flex items-center gap-2">
-            <BiLogOut />Logout
+    <>
+      <div className="hidden md:flex flex-col fixed left-0 top-0 h-screen w-64 bg-white border-r border-gray-200 shadow-sm">
+        <div className="p-6 border-b border-gray-100">
+          <div className="flex items-center gap-3">
+            <h1 className="text-xl font-bold text-gray-800">SaldaQ</h1>
+          </div>
+        </div>
+
+        <nav className="flex-1 px-4 py-6 space-y-2">
+          {menuItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = location.pathname === item.path;
+
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${isActive ? "bg-blue-50 text-blue-700 border border-blue-100 shadow-sm" : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"}`}
+              >
+                <Icon className={`w-5 h-5 ${isActive ? "text-blue-600" : "text-gray-400 group-hover:text-gray-600"}`} />
+                <span className="font-medium">{item.label}</span>
+                {isActive && <FiChevronRight className="w-4 h-4 ml-auto text-blue-600" />}
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div className="p-4 border-t border-gray-100">
+          <button onClick={openLogoutModal} className="flex items-center gap-3 w-full px-4 py-3 text-gray-600 hover:bg-red-50 hover:text-red-600 rounded-xl transition-all duration-200">
+            <FiLogOut className="w-5 h-5" />
+            <span className="font-medium">Logout</span>
           </button>
         </div>
       </div>
 
-      {/* Modal */}
-      <Modal 
-        size="md" 
-        isOpen={isOpen} 
-        onClose={closeModal}
-      >
-        <ModalContent>
-          <ModalHeader className="flex flex-col gap-1">Konfirmasi Logout</ModalHeader>
-            <ModalBody>
-              <p>Apakah Anda yakin ingin logout?</p>
-            </ModalBody>
-            <ModalFooter>
-              <Button color="danger" variant="light" onPress={closeModal}>
-                Batal
-              </Button>
-              <Button color="primary" onPress={handleLogout}>
-                Logout
-              </Button>
-            </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-2 shadow-lg">
+        <div className="flex justify-around">
+          {menuItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = location.pathname === item.path;
 
-      <div className="md:hidden fixed-bottom flex justify-center items-center">
-        <div className=" w-full rounded-full bg-white text-slate-800 flex justify-around py-3 transition-transform duration-300">
-          <Link to="/dashboard/home" className={`${location.pathname === "/dashboard/home" ? "bg-indigo-400 text-white" : ""} p-3 hover:bg-indigo-400 hover:text-white rounded-full`}>
-            <FaHome className="text-2xl" />
-          </Link>
-          <Link to={'/dashboard/incomes'} className={`${location.pathname === "/dashboard/incomes" ? "bg-indigo-400 text-white" : ""} p-3 hover:bg-indigo-400 hover:text-white rounded-full`}>
-            <FaWallet className="text-2xl" />
-          </Link>
-          <Link to={'/dashboard/expenses'} className={`${location.pathname === "/dashboard/expenses" ? "bg-indigo-400 text-white" : ""} p-3 hover:bg-indigo-400 hover:text-white rounded-full`}>
-            <FaMoneyBills className="text-2xl" />
-          </Link>
-          <Link to={'/dashboard/categories'} className={`${location.pathname === "/dashboard/categories" ? "bg-indigo-400 text-white" : ""} p-3 hover:bg-indigo-400 hover:text-white rounded-full`}>
-            <BiSolidCategory  className="text-2xl" />
-          </Link>
+            return (
+              <Link key={item.path} to={item.path} className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all duration-200 ${isActive ? "text-blue-600 bg-blue-50" : "text-gray-400 hover:text-gray-600"}`}>
+                <Icon className="w-5 h-5" />
+                <span className="text-xs font-medium">{item.label}</span>
+              </Link>
+            );
+          })}
         </div>
       </div>
-    </div>
+
+      {isLogoutModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full mx-4 overflow-hidden">
+            <div className="p-6 pb-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-gray-900">Confirm Logout</h3>
+                <button onClick={closeLogoutModal} className="text-gray-400 hover:text-gray-600 transition-colors">
+                  <FiX className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            <div className="px-6 pb-6">
+              <p className="text-gray-600">Are you sure you want to logout? You'll need to sign in again to access your account.</p>
+            </div>
+
+            <div className="px-6 py-4 bg-gray-50 flex gap-3 justify-end">
+              <button onClick={closeLogoutModal} className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium transition-colors">
+                Cancel
+              </button>
+              <button onClick={handleLogout} className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium flex items-center gap-2">
+                <FiCheck className="w-4 h-4" />
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
