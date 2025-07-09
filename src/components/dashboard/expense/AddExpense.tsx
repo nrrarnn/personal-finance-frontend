@@ -180,7 +180,7 @@ const AddExpense: React.FC<AddExpenseProps> = ({ token, editingExpense, setEditi
                 <Input
                   {...field}
                   type="text"
-                  label="Description (Optional)"
+                  label="Description"
                   placeholder="Additional notes about this expense"
                   variant="bordered"
                   color="primary"

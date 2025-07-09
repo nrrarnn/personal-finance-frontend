@@ -13,13 +13,14 @@ import { useCategories, useExpenses } from "../../../hooks/useTransactions";
 import ConfirmDeleteModal from "../../ConfirmDeleteModal";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
+import LoadingSpinner from "../../LoadingSpinner";
 
 
 const ListExpenses = () => {
   const token = useSelector((state: RootState) => state.auth.token);
 
-  const { data: listExpenses = [] } = useExpenses(token!);
-  const { data: listCategories = [] } = useCategories(token!);
+  const { data: listExpenses = [], isLoading: isExpensesLoading } = useExpenses(token!);
+  const { data: listCategories = [], isLoading: isCategoriesLoading } = useCategories(token!);
   const [editingExpense, setEditingExpense] = useState<TransactionResponse | null>(null);
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -54,6 +55,10 @@ const ListExpenses = () => {
   const handleEdit = (expense: TransactionResponse) => {
     setEditingExpense(expense);
   };
+
+  if (isExpensesLoading || isCategoriesLoading) {
+    return <LoadingSpinner/>
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 pb-20">

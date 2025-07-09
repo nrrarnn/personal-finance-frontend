@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
 import { useByCategory, useCategories } from "../../../hooks/useTransactions";
 import { FaArrowLeft, FaArrowUp, FaMoneyBillWave } from "react-icons/fa";
+import LoadingSpinner from "../../LoadingSpinner";
 
 const ExpensesByCategory = () => {
   const token = useSelector((state: RootState) => state.auth.token);
@@ -13,10 +14,14 @@ const ExpensesByCategory = () => {
   const { category } = useParams<Record<string, string | undefined>>();
   const transaction: string = "expenses";
 
-  const { data: listExpenses = [] } = useByCategory(token!, transaction, category!);
-  const { data: listCategories = [] } = useCategories(token!);
+  const { data: listExpenses = [], isLoading: isExpensesLoading } = useByCategory(token!, transaction, category!);
+  const { data: listCategories = [], isLoading: isCategoriesLoading } = useCategories(token!);
   const categoryData = listCategories.find((cat) => cat.name === category);
   const totalAmount = listExpenses.reduce((sum, expense) => sum + expense.amount, 0);
+
+  if (isExpensesLoading || isCategoriesLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-red-50/30 pb-20">

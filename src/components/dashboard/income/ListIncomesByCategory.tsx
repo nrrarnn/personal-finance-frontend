@@ -5,16 +5,21 @@ import { RiChat1Fill } from "react-icons/ri";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
 import { useByCategory, useCategories } from "../../../hooks/useTransactions";
+import LoadingSpinner from "../../LoadingSpinner";
 
 const IncomesByCategory = () => {
   const token = useSelector((state: RootState) => state.auth.token);
   const { category } = useParams<Record<string, string | undefined>>();
   const transaction: string = "incomes";
-  const { data: listIncomes = [] } = useByCategory(token!, transaction, category!);
-  const { data: listCategories = [] } = useCategories(token!);
+  const { data: listIncomes = [], isLoading: isIncomesLoading } = useByCategory(token!, transaction, category!);
+  const { data: listCategories = [], isLoading: isCategoriesLoading } = useCategories(token!);
 
   const categoryData = listCategories.find((cat) => cat.name === category);
   const totalAmount = listIncomes.reduce((sum, income) => sum + income.amount, 0);
+
+  if (isIncomesLoading || isCategoriesLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-emerald-50/30 pb-20">
@@ -90,11 +95,10 @@ const IncomesByCategory = () => {
                           </div>
                         </div>
 
-                        <div className="flex items-center">
+                        <div className="flex items-start">
                           <div className="text-right">
                             <div className="flex items-center gap-2">
-                              <FaArrowUp className="w-4 h-4 text-emerald-600" />
-                              <p className="text-2xl font-bold text-emerald-600">+ IDR {income.amount.toLocaleString()}</p>
+                              <p className="text-sm font-bold text-emerald-600">+ IDR {income.amount.toLocaleString()}</p>
                             </div>
                           </div>
                         </div>

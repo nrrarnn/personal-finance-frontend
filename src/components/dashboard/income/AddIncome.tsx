@@ -118,8 +118,8 @@ const AddIncome: React.FC<AddIncomeProps> = ({ editingTransaction, setEditingTra
                 <Input
                   {...field}
                   type="text"
-                  label="Expense Title"
-                  placeholder="e.g., Coffee, Gas, Groceries"
+                  label="Income Title"
+                  placeholder="e.g., Salary, Freelance"
                   variant="bordered"
                   color="primary"
                   size="lg"
@@ -203,7 +203,7 @@ const AddIncome: React.FC<AddIncomeProps> = ({ editingTransaction, setEditingTra
                 <Input
                   {...field}
                   type="text"
-                  label="Description (Optional)"
+                  label="Description"
                   placeholder="Additional notes about this income"
                   variant="bordered"
                   color="primary"

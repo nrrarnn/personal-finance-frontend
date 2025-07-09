@@ -13,6 +13,7 @@ import { useCategories, useIncomes } from "../../../hooks/useTransactions";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import ConfirmDeleteModal from "../../ConfirmDeleteModal";
+import LoadingSpinner from "../../LoadingSpinner";
 
 const ListIncome = () => {
   const token = useSelector((state: RootState) => state.auth.token);
@@ -52,7 +53,7 @@ const ListIncome = () => {
     setEditingIncome(income);
   };
 
-  if (loadingIncomes || loadingCategories) return <div className="text-center py-16">Loading...</div>;
+  if (loadingIncomes || loadingCategories) return <LoadingSpinner/>;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 pb-20">
