@@ -6,6 +6,7 @@ import { useCategories } from "../../../hooks/useTransactions";
 import api from "../../../api/api";
 import { toast } from "react-toastify";
 import { TransactionResponse } from "../../../types/types";
+import { useQueryClient } from "@tanstack/react-query";
 
 
 interface TransactionFormInput {
@@ -24,6 +25,7 @@ interface AddIncomeProps {
 const AddIncome: React.FC<AddIncomeProps> = ({ editingTransaction, setEditingTransaction, token }) => {
   const {data: categories = []} = useCategories(token || "");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const queryClient = useQueryClient();
 
   const {
     handleSubmit,
@@ -49,7 +51,10 @@ const AddIncome: React.FC<AddIncomeProps> = ({ editingTransaction, setEditingTra
       });
 
       if (response.status === 200) {
+        queryClient.invalidateQueries({ queryKey: ["incomes"] });
         toast.success("Income updated successfully");
+        reset();
+        setEditingTransaction(null);
       } else {
         toast.error("Failed to update income:");
       } 
@@ -61,6 +66,7 @@ const AddIncome: React.FC<AddIncomeProps> = ({ editingTransaction, setEditingTra
       });
       console.log("Response:", response);
       if (response.status === 200) {
+        queryClient.invalidateQueries({ queryKey: ["incomes"] });
         toast.success("Income added successfully");
       } else {
         toast.error("Failed to add income:");
@@ -226,7 +232,7 @@ const AddIncome: React.FC<AddIncomeProps> = ({ editingTransaction, setEditingTra
                       Processing...
                     </span>
                   ) : (
-                    editingTransaction ? "Update Expense" : "Add Expense"
+                    editingTransaction ? "Update Income" : "Add Income"
                   )
                 }
               </Button>

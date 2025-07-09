@@ -1,9 +1,11 @@
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import api from "../../../api/api";
 import { Button, Input, Select, SelectItem, Card, CardBody, CardHeader, Divider } from "@nextui-org/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { TransactionFormInput, TransactionResponse } from "../../../types/types";
 import { useCategories } from "../../../hooks/useTransactions";
+import { toast } from "react-toastify";
+import { useQueryClient } from "@tanstack/react-query";
 
 export interface AddExpenseProps {
   token: string | null;
@@ -13,6 +15,7 @@ export interface AddExpenseProps {
 
 const AddExpense: React.FC<AddExpenseProps> = ({ token, editingExpense, setEditingExpense }) => {
   const { data: categories = [] } = useCategories(token!);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { handleSubmit, control, reset } = useForm<TransactionFormInput>({
     defaultValues: {
       title: "",
@@ -21,28 +24,36 @@ const AddExpense: React.FC<AddExpenseProps> = ({ token, editingExpense, setEditi
       description: "",
     },
   });
+  const queryClient = useQueryClient();
 
   const onSubmit: SubmitHandler<TransactionFormInput> = async (data) => {
+    setIsSubmitting(true);
     try {
       if (editingExpense) {
-        const response = await api.put(`/expense/${editingExpense._id}`, data, {
+        await api.put(`/expense/${editingExpense._id}`, data, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log("Expense updated successfully:", response.data);
+        queryClient.invalidateQueries({ queryKey: ["expenses"] });
+        toast.success("Expense updated successfully");
+        reset();
+        setEditingExpense(null);
       } else {
-        const response = await api.post("/expense", data, {
+        await api.post("/expense", data, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log("Expense added successfully:", response.data);
+        queryClient.invalidateQueries({ queryKey: ["expenses"] });
+        toast.success("Expense added successfully");
       }
       reset();
       setEditingExpense(null);
     } catch (error) {
       console.error("Error adding Expense:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -151,7 +162,7 @@ const AddExpense: React.FC<AddExpenseProps> = ({ token, editingExpense, setEditi
                     value: "text-gray-700",
                   }}
                   onChange={(selectedValue) => field.onChange(selectedValue)}
-                  value={field.value}
+                  value={field.value || ""}
                 >
                   {(category) => (
                     <SelectItem key={category.name} value={category.name}>
@@ -187,10 +198,11 @@ const AddExpense: React.FC<AddExpenseProps> = ({ token, editingExpense, setEditi
               <Button
                 type="submit"
                 color="primary"
+                disabled={isSubmitting}
                 size="lg"
                 className="w-full font-semibold bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
               >
-                {editingExpense ? "Update Expense" : "Add Expense"}
+                {isSubmitting ? "Submitting..." : editingExpense ? "Update Expense" : "Add Expense"}
               </Button>
             </div>
           </form>

@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../store/authSlice";
 import { BiLogOut, BiTrendingUp, BiTrendingDown, BiWallet } from "react-icons/bi";
 import { RootState } from "../../store/store";
-import { FaArrowUp, FaArrowDown, FaEye, FaChartLine } from "react-icons/fa";
+import { FaArrowUp, FaArrowDown, FaChartLine } from "react-icons/fa";
 import { useBalance, useCategories, useExpenses, useIncomes } from "../../hooks/useTransactions";
 
 const HomeDashboard = () => {
@@ -141,13 +141,12 @@ const HomeDashboard = () => {
             <Card className="bg-gradient-to-br from-indigo-600 via-purple-600 to-indigo-700 text-white shadow-2xl shadow-indigo-500/20 border-0 overflow-hidden relative">
               <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
               <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full -ml-12 -mb-12"></div>
-              <CardBody className="p-6 relative z-10">
+              <CardBody className="p-6 relative">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
                     <BiWallet className="text-2xl opacity-90" />
                     <span className="text-white/90 font-medium">Total Balance</span>
                   </div>
-                  <FaEye className="text-white/70 hover:text-white cursor-pointer transition-colors" />
                 </div>
                 <div className="text-3xl md:text-4xl font-bold mb-2">IDR {balance.toLocaleString("id-ID")}</div>
                 <div className="flex items-center gap-2 text-white/80">

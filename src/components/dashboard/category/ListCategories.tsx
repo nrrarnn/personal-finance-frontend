@@ -6,7 +6,7 @@ import { truncateText } from "../../../data/functionTruncate";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
 import { useCategories } from "../../../hooks/useTransactions";
-import { FaPlus, FaArrowUp, FaArrowDown, FaWallet, FaMoneyBillWave } from "react-icons/fa6";
+import { FaPlus, FaWallet, FaMoneyBillWave } from "react-icons/fa6";
 
 const ListCategories = () => {
   const token = useSelector((state: RootState) => state.auth.token);
@@ -19,8 +19,7 @@ const ListCategories = () => {
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 to-blue-50/30 p-4">
       <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row items-start gap-2 justify-between mb-8">
           <div>
             <h1 className="text-4xl font-bold font-poppins text-gray-800 mb-2">Categories</h1>
             <p className="text-gray-600">Organize your transactions by category</p>
@@ -42,9 +41,6 @@ const ListCategories = () => {
           <Card className="shadow-md shadow-gray-300 border-0 bg-white/80 backdrop-blur-sm mb-6">
             <CardBody className="p-6">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center">
-                  <FaArrowUp className="w-5 h-5 text-white" />
-                </div>
                 <div>
                   <h2 className="font-poppins font-bold text-2xl text-gray-800">Income Categories</h2>
                   <p className="text-sm text-gray-600">Money coming in</p>
@@ -86,9 +82,6 @@ const ListCategories = () => {
           <Card className="shadow-md shadow-gray-300 border-0 bg-white/80 backdrop-blur-sm">
             <CardBody className="p-6">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center">
-                  <FaArrowDown className="w-5 h-5 text-white" />
-                </div>
                 <div>
                   <h2 className="font-poppins font-bold text-2xl text-gray-800">Expense Categories</h2>
                   <p className="text-sm text-gray-600">Money going out</p>

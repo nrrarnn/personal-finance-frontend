@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FiHome, FiCreditCard, FiGrid, FiLogOut, FiX, FiCheck, FiChevronRight, FiTrendingUp } from "react-icons/fi";
 
-
 const Sidebar = () => {
   const navigate = useNavigate();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
@@ -28,7 +27,8 @@ const Sidebar = () => {
 
   return (
     <>
-      <div className="hidden md:flex flex-col fixed left-0 top-0 h-screen w-64 bg-white border-r border-gray-200 shadow-sm">
+      {/* Desktop Sidebar */}
+      <div className="hidden md:flex flex-col fixed left-0 top-0 h-screen w-64 bg-white border-r border-gray-200 shadow-sm z-40">
         <div className="p-6 border-b border-gray-100">
           <div className="flex items-center gap-3">
             <h1 className="text-xl font-bold text-gray-800">SaldaQ</h1>
@@ -62,8 +62,8 @@ const Sidebar = () => {
         </div>
       </div>
 
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-2 shadow-lg">
-        <div className="flex justify-around">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-2 shadow-lg z-50">
+        <div className="flex justify-around items-center">
           {menuItems.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
@@ -75,11 +75,17 @@ const Sidebar = () => {
               </Link>
             );
           })}
+
+          <button onClick={openLogoutModal} className="flex flex-col items-center gap-1 px-3 py-2 text-gray-500 hover:text-red-600 rounded-lg transition-all duration-200">
+            <FiLogOut className="w-5 h-5" />
+            <span className="text-xs font-medium">Logout</span>
+          </button>
         </div>
       </div>
 
+      {/* Logout Modal */}
       {isLogoutModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100] p-4">
           <div className="bg-white rounded-2xl shadow-xl max-w-md w-full mx-4 overflow-hidden">
             <div className="p-6 pb-4">
               <div className="flex items-center justify-between">
