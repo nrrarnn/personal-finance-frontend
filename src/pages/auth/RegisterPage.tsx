@@ -60,8 +60,8 @@ const RegisterPage = () => {
       <div className="w-full lg:w-1/2 flex flex-col justify-center items-center p-8 lg:p-12">
         <div className="w-full max-w-md space-y-8">
           <div className="text-center">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Buat Akun Baru</h1>
-            <p className="text-gray-600">Daftarkan diri Anda untuk memulai</p>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Create a New Account</h1>
+            <p className="text-gray-600"> Sign up to get started</p>
           </div>
 
           <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
@@ -72,7 +72,7 @@ const RegisterPage = () => {
                   <input
                     type="text"
                     {...register("username")}
-                    placeholder="masukkan username"
+                    placeholder="Enter username"
                     className={`w-full pl-4 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
                       errors.username ? "border-red-300 focus:ring-red-500" : "border-gray-300 hover:border-blue-400"
                     }`}
@@ -87,7 +87,7 @@ const RegisterPage = () => {
                   <input
                     type="email"
                     {...register("email")}
-                    placeholder="masukkan@email.com"
+                    placeholder="Enter email address"
                     className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${errors.email ? "border-red-300 focus:ring-red-500" : "border-gray-300 hover:border-blue-400"}`}
                   />
                 </div>
@@ -100,10 +100,8 @@ const RegisterPage = () => {
                   <input
                     type={isVisible ? "text" : "password"}
                     {...register("password")}
-                    placeholder="masukkan password"
-                    className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
-                      errors.password ? "border-red-300 focus:ring-red-500" : "border-gray-300 hover:border-blue-400"
-                    }`}
+                    placeholder="Enter password"
+                    className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${errors.password ? "border-red-300 focus:ring-red-500" : "border-gray-300 hover:border-blue-400"}`}
                   />
                   <button className="absolute inset-y-0 right-0 pr-3 flex items-center hover:bg-gray-100 rounded-r-xl transition-colors" type="button" onClick={toggleVisibility}>
                     {isVisible ? (
@@ -127,12 +125,12 @@ const RegisterPage = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Konfirmasi Password</label>
+                <label className="text-sm font-medium text-gray-700">Confirmation Password</label>
                 <div className="relative">
                   <input
                     type={isConfirmVisible ? "text" : "password"}
                     {...register("confirmPassword")}
-                    placeholder="konfirmasi password"
+                    placeholder="Confirmation password"
                     className={`w-full pl-4 pr-12 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
                       errors.confirmPassword ? "border-red-300 focus:ring-red-500" : "border-gray-300 hover:border-blue-400"
                     }`}
@@ -169,18 +167,18 @@ const RegisterPage = () => {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    Memproses...
+                    Processing...
                   </div>
                 ) : (
-                  "Daftar"
+                  "Sign Up"
                 )}
               </button>
             </form>
             <div className="mt-8 text-center">
               <p className="text-gray-600">
-                Sudah punya akun?{" "}
+                Have an account?{" "}
                 <Link to="/login" className="text-blue-600 hover:text-blue-800 font-semibold transition-colors">
-                  Masuk
+                  Sign In
                 </Link>
               </p>
             </div>
@@ -197,8 +195,8 @@ const RegisterPage = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h2 className="text-4xl font-bold mb-6">Kelola Keuangan dengan Mudah</h2>
-            <p className="text-xl text-blue-100 mb-8">Platform terpercaya untuk mengelola keuangan pribadi dan bisnis Anda dengan fitur yang lengkap dan mudah digunakan.</p>
+            <h2 className="text-4xl font-bold mb-6">Manage Your Finances with Ease</h2>
+            <p className="text-xl text-blue-100 mb-8">A trusted platform to manage your personal and business finances with complete and easy-to-use features.</p>
           </div>
         </div>
       </div>

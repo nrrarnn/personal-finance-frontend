@@ -19,9 +19,7 @@ const IncomesByCategory = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-emerald-50/30 pb-20">
       <div className="max-w-6xl mx-auto px-4 py-8">
-        {/* Header Section */}
         <div className="mb-8">
-          {/* Breadcrumbs */}
           <Breadcrumbs className="mb-4">
             <BreadcrumbItem>
               <Link to="/dashboard/categories" className="text-gray-600 hover:text-emerald-600">
@@ -33,7 +31,6 @@ const IncomesByCategory = () => {
             </BreadcrumbItem>
           </Breadcrumbs>
 
-          {/* Header Content */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-4">
               <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg">{categoryData?.icon || "💰"}</div>
@@ -46,7 +43,7 @@ const IncomesByCategory = () => {
             <div className="flex items-center gap-4">
               <div className="bg-gradient-to-r from-emerald-50 to-emerald-100 border border-emerald-200 rounded-2xl px-4 py-2 flex items-center gap-2">
                 <FaArrowUp className="text-emerald-600" />
-                <span className="text-emerald-700 font-semibold">Total: Rp. {totalAmount.toLocaleString()}</span>
+                <span className="text-emerald-700 font-semibold">Total: IDR {totalAmount.toLocaleString()}</span>
               </div>
               <Button color="primary" variant="bordered" className="font-semibold hover:bg-primary-50" startContent={<FaArrowLeft className="w-4 h-4" />}>
                 <Link to={"/dashboard/categories"}>Back to Categories</Link>
@@ -55,7 +52,6 @@ const IncomesByCategory = () => {
           </div>
         </div>
 
-        {/* Content Section */}
         <div className="w-full lg:w-[70%]">
           {listIncomes.length > 0 ? (
             <div className="space-y-4">
@@ -65,7 +61,6 @@ const IncomesByCategory = () => {
                   <Card key={income._id} className="w-full shadow-md hover:shadow-lg transition-all duration-300 border-0 bg-white/80 backdrop-blur-sm hover:bg-white/90">
                     <CardBody className="p-6">
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                        {/* Left Section - Category Icon and Details */}
                         <div className="flex items-start gap-4 flex-1">
                           <div className="flex-shrink-0">
                             <div className="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center text-white text-xl shadow-lg">{category?.icon || "💰"}</div>
@@ -95,12 +90,11 @@ const IncomesByCategory = () => {
                           </div>
                         </div>
 
-                        {/* Right Section - Amount */}
                         <div className="flex items-center">
                           <div className="text-right">
                             <div className="flex items-center gap-2">
                               <FaArrowUp className="w-4 h-4 text-emerald-600" />
-                              <p className="text-2xl font-bold text-emerald-600">+ Rp. {income.amount.toLocaleString()}</p>
+                              <p className="text-2xl font-bold text-emerald-600">+ IDR {income.amount.toLocaleString()}</p>
                             </div>
                           </div>
                         </div>

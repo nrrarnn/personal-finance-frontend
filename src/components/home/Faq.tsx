@@ -23,10 +23,6 @@ const faqData: FAQItem[] = [
     question: "Can I use SaldaQ on multiple devices?",
     answer: "Yes, your data is synchronized across devices. You can log in from any device and continue tracking your finances.",
   },
-  {
-    question: "How secure is my financial data?",
-    answer: "We use bank-level encryption and security measures to protect your data. Your information is stored securely and never shared with third parties.",
-  },
 ];
 
 const Faq: React.FC = () => {
@@ -39,7 +35,6 @@ const Faq: React.FC = () => {
   return (
     <section className="py-20 bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-20">
-        {/* Header */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl mb-6">
             <FaQuestionCircle className="w-8 h-8 text-white" />
@@ -48,7 +43,6 @@ const Faq: React.FC = () => {
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">Find answers to common questions about SaldaQ and how it can help you manage your finances better.</p>
         </div>
 
-        {/* FAQ Items */}
         <div className="space-y-4">
           {faqData.map((faq, index) => (
             <div key={index} className="group bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
@@ -74,7 +68,6 @@ const Faq: React.FC = () => {
           ))}
         </div>
 
-        {/* CTA Section */}
         <div className="mt-16 text-center">
           <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-200">
             <h3 className="text-xl font-semibold text-gray-900 mb-3">Still have questions?</h3>

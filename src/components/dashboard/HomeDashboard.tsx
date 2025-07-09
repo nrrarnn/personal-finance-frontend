@@ -149,7 +149,7 @@ const HomeDashboard = () => {
                   </div>
                   <FaEye className="text-white/70 hover:text-white cursor-pointer transition-colors" />
                 </div>
-                <div className="text-3xl md:text-4xl font-bold mb-2">Rp. {balance.toLocaleString("id-ID")}</div>
+                <div className="text-3xl md:text-4xl font-bold mb-2">IDR {balance.toLocaleString("id-ID")}</div>
                 <div className="flex items-center gap-2 text-white/80">
                   <span className="text-sm">Savings Rate:</span>
                   <span className="text-sm font-semibold">{savingsRate}%</span>
@@ -170,7 +170,7 @@ const HomeDashboard = () => {
                   </div>
                   <BiTrendingUp className="text-2xl opacity-80" />
                 </div>
-                <div className="text-xl md:text-2xl font-bold">Rp. {totalIncome.toLocaleString("id-ID")}</div>
+                <div className="text-xl md:text-2xl font-bold">IDR {totalIncome.toLocaleString("id-ID")}</div>
                 <div className="text-white/80 text-sm mt-2">This month</div>
               </CardBody>
             </Card>
@@ -186,7 +186,7 @@ const HomeDashboard = () => {
                   </div>
                   <BiTrendingDown className="text-2xl opacity-80" />
                 </div>
-                <div className="text-xl md:text-2xl font-bold">Rp. {totalExpense.toLocaleString("id-ID")}</div>
+                <div className="text-xl md:text-2xl font-bold">IDR {totalExpense.toLocaleString("id-ID")}</div>
                 <div className="text-white/80 text-sm mt-2">This month</div>
               </CardBody>
             </Card>
@@ -209,7 +209,9 @@ const HomeDashboard = () => {
                       const backgroundColor = colors2[index % colors.length];
                       return (
                         <Link key={category._id} to={`/dashboard/${category.type === "income" ? "incomes" : "expenses"}/${category.name}`}>
-                          <div className={`min-w-[80px] h-20 hover:from-indigo-100 hover:to-purple-100 rounded-xl flex flex-col items-center justify-center gap-1 transition-all duration-200 hover:scale-105 hover:shadow-lg cursor-pointer group ${backgroundColor}`}>
+                          <div
+                            className={`min-w-[80px] h-20 hover:from-indigo-100 hover:to-purple-100 rounded-xl flex flex-col items-center justify-center gap-1 transition-all duration-200 hover:scale-105 hover:shadow-lg cursor-pointer group ${backgroundColor}`}
+                          >
                             <div className="text-2xl group-hover:scale-110 transition-transform">{category.icon}</div>
                             <div className="text-xs font-medium text-slate-600 group-hover:text-indigo-600 transition-colors">{truncateText(category.name, 9)}</div>
                           </div>
@@ -240,7 +242,7 @@ const HomeDashboard = () => {
                         <div className="text-sm text-slate-500 capitalize">{transaction.type}</div>
                       </div>
                       <div className={`font-bold ${transaction.type === "expense" ? "text-rose-600" : "text-emerald-600"}`}>
-                        {transaction.type === "expense" ? "-" : "+"}Rp. {transaction.amount.toLocaleString("id-ID")}
+                        {transaction.type === "expense" ? "-" : "+"}IDR {transaction.amount.toLocaleString("id-ID")}
                       </div>
                     </div>
                   ))}

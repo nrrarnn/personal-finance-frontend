@@ -74,8 +74,8 @@ const LoginPage = () => {
       <div className="w-full lg:w-1/2 flex flex-col justify-center items-center p-8 lg:p-16">
         <div className="w-full max-w-md space-y-8">
           <div className="text-center">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Selamat Datang</h1>
-            <p className="text-gray-600">Masuk ke akun Anda untuk melanjutkan</p>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome</h1>
+            <p className="text-gray-600">Sign in to your account to continue</p>
           </div>
 
           <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
@@ -91,7 +91,7 @@ const LoginPage = () => {
                   <input
                     type="email"
                     {...register("email")}
-                    placeholder="masukkan@email.com"
+                    placeholder="Enter your email"
                     className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${errors.email ? "border-red-300 focus:ring-red-500" : "border-gray-300 hover:border-blue-400"}`}
                   />
                 </div>
@@ -109,7 +109,7 @@ const LoginPage = () => {
                   <input
                     type={isVisible ? "text" : "password"}
                     {...register("password")}
-                    placeholder="masukkan password"
+                    placeholder="Enter your password"
                     className={`w-full pl-10 pr-12 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
                       errors.password ? "border-red-300 focus:ring-red-500" : "border-gray-300 hover:border-blue-400"
                     }`}
@@ -138,10 +138,10 @@ const LoginPage = () => {
               <div className="flex items-center justify-between">
                 <label className="flex items-center">
                   <input type="checkbox" className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" />
-                  <span className="ml-2 text-sm text-gray-600">Ingat saya</span>
+                  <span className="ml-2 text-sm text-gray-600">Remember me</span>
                 </label>
                 <a href="#" className="text-sm text-blue-600 hover:text-blue-800 font-medium">
-                  Lupa password?
+                  Forgot password?
                 </a>
               </div>
 
@@ -156,19 +156,19 @@ const LoginPage = () => {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    Memproses...
+                    Processing...
                   </div>
                 ) : (
-                  "Masuk"
+                  "Sign In"
                 )}
               </button>
             </form>
 
             <div className="mt-8 text-center">
               <p className="text-gray-600">
-                Belum punya akun?{" "}
+                Don&apos;t have an account?{" "}
                 <Link to="/register" className="text-blue-600 hover:text-blue-800 font-semibold transition-colors">
-                  Daftar sekarang
+                  Sign Up
                 </Link>
               </p>
             </div>
@@ -185,8 +185,8 @@ const LoginPage = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h2 className="text-4xl font-bold mb-6">Kelola Keuangan dengan Mudah</h2>
-            <p className="text-xl text-blue-100 mb-8">Platform terpercaya untuk mengelola keuangan pribadi dan bisnis Anda dengan fitur yang lengkap dan mudah digunakan.</p>
+            <h2 className="text-4xl font-bold mb-6">Manage Your Finances with Ease</h2>
+            <p className="text-xl text-blue-100 mb-8">A trusted platform to manage your personal and business finances with complete and easy-to-use features.</p>
           </div>
         </div>
       </div>

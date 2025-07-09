@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom"
+import { Link, useParams } from "react-router-dom";
 import { BreadcrumbItem, Breadcrumbs, Button, Card, CardBody, Chip } from "@nextui-org/react";
 import { FaCalendar } from "react-icons/fa6";
 import { RiChat1Fill } from "react-icons/ri";
@@ -11,7 +11,7 @@ const ExpensesByCategory = () => {
   const token = useSelector((state: RootState) => state.auth.token);
 
   const { category } = useParams<Record<string, string | undefined>>();
-  const transaction: string = 'expenses'
+  const transaction: string = "expenses";
 
   const { data: listExpenses = [] } = useByCategory(token!, transaction, category!);
   const { data: listCategories = [] } = useCategories(token!);
@@ -45,7 +45,7 @@ const ExpensesByCategory = () => {
             <div className="flex items-center gap-4">
               <div className="bg-gradient-to-r from-red-50 to-red-100 border border-red-200 rounded-2xl px-4 py-2 flex items-center gap-2">
                 <FaArrowUp className="text-red-600" />
-                <span className="text-red-700 font-semibold">Total: Rp. {totalAmount.toLocaleString()}</span>
+                <span className="text-red-700 font-semibold">Total: IDR {totalAmount.toLocaleString()}</span>
               </div>
               <Button color="primary" variant="bordered" className="font-semibold hover:bg-primary-50" startContent={<FaArrowLeft className="w-4 h-4" />}>
                 <Link to={"/dashboard/categories"}>Back to Categories</Link>
@@ -99,7 +99,7 @@ const ExpensesByCategory = () => {
                           <div className="text-right">
                             <div className="flex items-center gap-2">
                               <FaArrowUp className="w-4 h-4 text-red-600" />
-                              <p className="text-2xl font-bold text-red-600">+ Rp. {expense.amount.toLocaleString()}</p>
+                              <p className="text-2xl font-bold text-red-600">+ IDR {expense.amount.toLocaleString()}</p>
                             </div>
                           </div>
                         </div>
@@ -124,6 +124,6 @@ const ExpensesByCategory = () => {
       </div>
     </div>
   );
-}
+};
 
-export default ExpensesByCategory
+export default ExpensesByCategory;

@@ -5,7 +5,7 @@ import { Link } from "react-router-dom"
 const HeroSection = () => {
   return (
     <>
-      <div className="bg-white w-full h-full py-24 px-6 md:px-20 flex flex-wrap">
+      <div className="bg-white w-full h-full py-24 px-6 md:px-24 flex flex-wrap">
         <div className="w-full md:w-[50%] flex flex-col justify-center">
           <h1 className="text-6xl font-bold font-poppins pb-3 pt-3" data-aos="fade-right">
             Simplify Your Budgeting Process

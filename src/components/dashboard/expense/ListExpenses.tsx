@@ -105,7 +105,7 @@ const ListExpenses = () => {
 
                           <div className="flex items-start gap-4 ml-4">
                             <div className="text-right">
-                              <div className="text-xl font-bold text-red-600 mb-1">+Rp {income.amount.toLocaleString("id-ID")}</div>
+                              <div className="text-xl font-bold text-red-600 mb-1">+IDR {income.amount.toLocaleString("id-ID")}</div>
                               <div className="text-xs text-gray-500 uppercase tracking-wide">{income.type}</div>
                             </div>
 

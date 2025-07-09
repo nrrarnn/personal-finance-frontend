@@ -143,7 +143,7 @@ const AddIncome: React.FC<AddIncomeProps> = ({ editingTransaction, setEditingTra
                   size="lg"
                   startContent={
                     <div className="pointer-events-none flex items-center">
-                      <span className="text-gray-500 font-medium">$</span>
+                      <span className="text-gray-500 font-medium">IDR</span>
                     </div>
                   }
                   classNames={{
