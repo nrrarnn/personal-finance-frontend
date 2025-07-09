@@ -46,7 +46,7 @@ const RegisterPage = () => {
         password: data.password,
       });
       reset();
-      toast.success("Registrasi berhasil! Silakan masuk.");
+      toast.success("You’ve registered successfully! Please sign in to continue.");
 
     } catch (error) {
       console.error(error);

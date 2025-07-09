@@ -59,7 +59,7 @@ const LoginPage = () => {
 
       dispatch(setAuth({ token, username, email }));
 
-      toast.success("Login berhasil! Selamat datang kembali.");
+      toast.success("You’ve successfully signed in");
       navigate("/dashboard/home");
       reset();
     } catch (error) {
