@@ -1,8 +1,7 @@
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { Button, Input, Select, SelectItem, Card, CardBody, CardHeader, Divider } from "@nextui-org/react";
 import { SetStateAction, useEffect, useState, Dispatch } from "react";
-import { FaPlus, FaDollarSign, FaTag, FaFile } from "react-icons/fa6";
-import { MdEdit } from "react-icons/md";
+import { FaPlus } from "react-icons/fa6";
 import { useCategories } from "../../../hooks/useTransactions";
 import api from "../../../api/api";
 import { toast } from "react-toastify";
@@ -96,72 +95,67 @@ const AddIncome: React.FC<AddIncomeProps> = ({ editingTransaction, setEditingTra
   }, [editingTransaction, reset]);
 
   return (
-    <div className="w-full max-w-sm mx-auto">
+    <div className="w-full max-w-sm">
       <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
-        <CardHeader className="pb-3">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg">{editingTransaction ? <MdEdit className="h-5 w-5 text-white" /> : <FaPlus className="h-5 w-5 text-white" />}</div>
-            <div>
-              <h2 className="text-xl font-semibold text-gray-800">{editingTransaction ? "Update Income" : "Add New Income"}</h2>
-              <p className="text-sm text-gray-500">{editingTransaction ? "Modify your income entry" : "Track your earnings"}</p>
-            </div>
-          </div>
+        <CardHeader className="flex flex-col items-start px-6 pt-6 pb-2">
+          <h2 className="text-2xl font-bold text-gray-800 mb-1">{editingTransaction ? "Edit Income" : "Add New Income"}</h2>
+          <p className="text-gray-600 text-sm">{editingTransaction ? "Update your income details" : "Track your spending effectively"}</p>
         </CardHeader>
-
-        <Divider />
-
-        <CardBody className="pt-6">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <Divider className="opacity-20" />
+        <CardBody className="px-6 pt-4 pb-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <Controller
               name="title"
               control={control}
               rules={{ required: "Title is required" }}
               render={({ field, fieldState }) => (
-                <div className="space-y-2">
-                  <Input
-                    {...field}
-                    type="text"
-                    label="Income Title"
-                    placeholder="e.g., Monthly Salary"
-                    isInvalid={Boolean(fieldState.error)}
-                    errorMessage={fieldState.error?.message}
-                    classNames={{
-                      input: "text-gray-700",
-                      label: "text-gray-600 font-medium",
-                    }}
-                    startContent={<FaFile className="h-4 w-4 text-gray-400" />}
-                    variant="bordered"
-                  />
-                </div>
+                <Input
+                  {...field}
+                  type="text"
+                  label="Expense Title"
+                  placeholder="e.g., Coffee, Gas, Groceries"
+                  variant="bordered"
+                  color="primary"
+                  size="lg"
+                  classNames={{
+                    input: "text-gray-700",
+                    label: "text-gray-600 font-medium",
+                    inputWrapper: "border-gray-200 hover:border-red-400 focus-within:border-red-500 bg-white/50",
+                  }}
+                  isInvalid={Boolean(fieldState.error)}
+                  errorMessage={fieldState.error?.message}
+                />
               )}
             />
 
             <Controller
               name="amount"
               control={control}
-              rules={{
-                required: "Amount is required",
-                min: { value: 0.01, message: "Amount must be positive" },
-              }}
+              rules={{ required: "Amount is required", min: { value: 1, message: "Amount must be positive" } }}
               render={({ field, fieldState }) => (
-                <div className="space-y-2">
-                  <Input
-                    {...field}
-                    type="number"
-                    label="Amount"
-                    placeholder="0.00"
-                    isInvalid={Boolean(fieldState.error)}
-                    errorMessage={fieldState.error?.message}
-                    value={field.value.toString()}
-                    onChange={(e) => field.onChange(Number(e.target.value))}
-                    classNames={{
-                      input: "text-gray-700 text-lg font-medium",
-                      label: "text-gray-600 font-medium",
-                    }}
-                    startContent={<FaDollarSign className="h-4 w-4 text-green-500" />}
-                    variant="bordered"
-                  />
-                </div>
+                <Input
+                  {...field}
+                  type="number"
+                  label="Amount"
+                  placeholder="0.00"
+                  variant="bordered"
+                  color="primary"
+                  size="lg"
+                  startContent={
+                    <div className="pointer-events-none flex items-center">
+                      <span className="text-gray-500 font-medium">$</span>
+                    </div>
+                  }
+                  classNames={{
+                    input: "text-gray-700 font-medium",
+                    label: "text-gray-600 font-medium",
+                    inputWrapper: "border-gray-200 hover:border-primary-400 focus-within:border-primary-500 bg-white/50",
+                  }}
+                  isInvalid={Boolean(fieldState.error)}
+                  errorMessage={fieldState.error?.message}
+                  value={field.value.toString()}
+                  onChange={(e) => field.onChange(Number(e.target.value))}
+                />
               )}
             />
 
@@ -169,31 +163,30 @@ const AddIncome: React.FC<AddIncomeProps> = ({ editingTransaction, setEditingTra
               name="category"
               control={control}
               rules={{ required: "Category is required" }}
-              render={({ field, fieldState }) => (
-                <div className="space-y-2">
-                  <Select
-                    {...field}
-                    label="Category"
-                    placeholder="Choose income category"
-                    aria-label="Income Category"
-                    isInvalid={Boolean(fieldState.error)}
-                    errorMessage={fieldState.error?.message}
-                    classNames={{
-                      label: "text-gray-600 font-medium",
-                      trigger: "border-gray-200 hover:border-gray-300",
-                    }}
-                    startContent={<FaTag className="h-4 w-4 text-gray-400" />}
-                    variant="bordered"
-                    value={field.value}
-                    onChange={(selectedValue) => field.onChange(selectedValue)}
-                  >
-                    {incomeCategories.map((category) => (
-                      <SelectItem key={category.name} value={category.name}>
-                        {category.name}
-                      </SelectItem>
-                    ))}
-                  </Select>
-                </div>
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  label="Category"
+                  placeholder="Choose income category"
+                  aria-label="Category"
+                  variant="bordered"
+                  color="primary"
+                  size="lg"
+                  items={incomeCategories}
+                  classNames={{
+                    label: "text-gray-600 font-medium",
+                    trigger: "border-gray-200 hover:border-primary-400 focus:border-primary-500 bg-white/50",
+                    value: "text-gray-700",
+                  }}
+                  onChange={(selectedValue) => field.onChange(selectedValue)}
+                  value={field.value}
+                >
+                  {(category) => (
+                    <SelectItem key={category.name} value={category.name}>
+                      {category.name}
+                    </SelectItem>
+                  )}
+                </Select>
               )}
             />
 
@@ -201,47 +194,43 @@ const AddIncome: React.FC<AddIncomeProps> = ({ editingTransaction, setEditingTra
               name="description"
               control={control}
               render={({ field }) => (
-                <div className="space-y-2">
-                  <Input
-                    {...field}
-                    type="text"
-                    label="Description (Optional)"
-                    placeholder="Add notes about this income"
-                    classNames={{
-                      input: "text-gray-700",
-                      label: "text-gray-600 font-medium",
-                    }}
-                    variant="bordered"
-                  />
-                </div>
+                <Input
+                  {...field}
+                  type="text"
+                  label="Description (Optional)"
+                  placeholder="Additional notes about this income"
+                  variant="bordered"
+                  color="primary"
+                  size="lg"
+                  classNames={{
+                    input: "text-gray-700",
+                    label: "text-gray-600 font-medium",
+                    inputWrapper: "border-gray-200 hover:border-primary-400 focus-within:border-primary-500 bg-white/50",
+                  }}
+                />
               )}
             />
 
-            <div className="pt-4">
+            <div className="pt-2">
               <Button
                 type="submit"
-                className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-200"
+                color="primary"
                 size="lg"
-                isLoading={isSubmitting}
-                startContent={!isSubmitting && (editingTransaction ? <MdEdit className="h-4 w-4" /> : <FaPlus className="h-4 w-4" />)}
+                disabled={isSubmitting}
+                className="w-full font-semibold bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
               >
-                {isSubmitting ? "Processing..." : editingTransaction ? "Update Income" : "Add Income"}
+                {
+                  isSubmitting ? (
+                    <span className="flex items-center justify-center">
+                      <FaPlus className="animate-spin mr-2" />
+                      Processing...
+                    </span>
+                  ) : (
+                    editingTransaction ? "Update Expense" : "Add Expense"
+                  )
+                }
               </Button>
             </div>
-
-            {editingTransaction && (
-              <Button
-                type="button"
-                variant="light"
-                className="w-full text-gray-500 hover:text-gray-700"
-                onPress={() => {
-                  setEditingTransaction(null);
-                  reset();
-                }}
-              >
-                Cancel Edit
-              </Button>
-            )}
           </form>
         </CardBody>
       </Card>

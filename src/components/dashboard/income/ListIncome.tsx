@@ -78,11 +78,8 @@ const ListIncome = () => {
                         <div className="flex items-start justify-between">
                           <div className="flex items-start space-x-4 flex-1">
                             <div className="relative">
-                              <div className="w-14 h-14 bg-gradient-to-br from-green-400 to-blue-500 rounded-2xl flex items-center justify-center text-white text-xl shadow-lg group-hover:shadow-xl transition-shadow duration-300">
+                              <div className="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center text-white text-xl group-hover:shadow-xl transition-shadow duration-300">
                                 {category?.icon || "💰"}
-                              </div>
-                              <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full flex items-center justify-center">
-                                <span className="text-xs text-white font-bold">+</span>
                               </div>
                             </div>
 
