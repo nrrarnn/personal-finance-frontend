@@ -64,7 +64,6 @@ const AddIncome: React.FC<AddIncomeProps> = ({ editingTransaction, setEditingTra
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log("Response:", response);
       if (response.status === 200) {
         queryClient.invalidateQueries({ queryKey: ["incomes"] });
         toast.success("Income added successfully");

@@ -31,7 +31,7 @@ const AddCategory: React.FC<AddCategoryProps> = ({isOpen, onOpenChange, token}) 
   const onSubmit: SubmitHandler<CategoryFormInput> = async (data) => {
     try {
       setLoading(true);
-      const response = await api.post(
+      await api.post(
         "/category", 
         data,
         {
@@ -40,7 +40,6 @@ const AddCategory: React.FC<AddCategoryProps> = ({isOpen, onOpenChange, token}) 
           },
         }
       );
-      console.log("Category added:", response.data);
       onOpenChange(false); 
       reset();
     } catch (error) {

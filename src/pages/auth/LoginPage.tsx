@@ -40,7 +40,6 @@ const LoginPage = () => {
     });
 
   const handleLogin = async (data: LoginForm) => {
-    console.log("Data yang dikirim:", data);
     setIsLoading(true);
     try {
       const response = await api.post<AuthResponse>("/auth/login", {
@@ -51,7 +50,6 @@ const LoginPage = () => {
       const username: string = response.data.user.username;
       const email: string = response.data.user.email;
 
-      console.log("Login berhasil", response.data);
 
       localStorage.setItem("token", token);
       localStorage.setItem("username", username);
