@@ -29,8 +29,8 @@ const AddCategory: React.FC<AddCategoryProps> = ({isOpen, onOpenChange, token}) 
   const [loading, setLoading] = useState<boolean>(false);
 
   const onSubmit: SubmitHandler<CategoryFormInput> = async (data) => {
+    setLoading(true);
     try {
-      setLoading(true);
       await api.post(
         "/category", 
         data,
