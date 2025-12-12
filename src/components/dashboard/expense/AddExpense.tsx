@@ -165,7 +165,7 @@ const AddExpense: React.FC<AddExpenseProps> = ({ token, editingExpense, setEditi
                   value={field.value || ""}
                 >
                   {(category) => (
-                    <SelectItem key={category.name} value={category.name}>
+                    <SelectItem key={category._id + 1} value={category.name}>
                       {category.name}
                     </SelectItem>
                   )}
