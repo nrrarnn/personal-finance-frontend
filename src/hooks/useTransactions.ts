@@ -4,14 +4,14 @@ import { getBalance, getByCategories, getCategories, getExpenses, getIncomes } f
 
 export const useIncomes = (token: string) =>
   useQuery<TransactionResponse[]>({
-    queryKey: ['incomes'],
+    queryKey: ['transactions', 'income'],
     queryFn: () => getIncomes(token),
     enabled: !!token, 
   })
 
 export const useExpenses = (token: string) =>
   useQuery<TransactionResponse[]>({
-    queryKey: ['expenses'],
+    queryKey: ['transactions', 'expense'],
     queryFn: () => getExpenses(token),
     enabled: !!token,
   })
@@ -30,9 +30,9 @@ export const useBalance = (token: string) =>
     enabled: !!token,
   })
 
-export const useByCategory = (token: string, transaction: string, category: string) =>
+export const useByCategory = (token: string, type: string, categoryId: string) =>
   useQuery<TransactionResponse[]>({
-    queryKey: ['byCategory', transaction, category],
-    queryFn: () => getByCategories(token, transaction, category),
-    enabled: !!token && !!transaction && !!category,
+    queryKey: ['byCategory', type, categoryId],
+    queryFn: () => getByCategories(token, type, categoryId),
+    enabled: !!token && !!type && !!categoryId,
   })

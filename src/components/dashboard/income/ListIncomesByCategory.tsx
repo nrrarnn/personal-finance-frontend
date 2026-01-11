@@ -10,11 +10,10 @@ import LoadingSpinner from "../../LoadingSpinner";
 const IncomesByCategory = () => {
   const token = useSelector((state: RootState) => state.auth.token);
   const { category } = useParams<Record<string, string | undefined>>();
-  const transaction: string = "incomes";
-  const { data: listIncomes = [], isLoading: isIncomesLoading } = useByCategory(token!, transaction, category!);
   const { data: listCategories = [], isLoading: isCategoriesLoading } = useCategories(token!);
-
   const categoryData = listCategories.find((cat) => cat.name === category);
+  const type: string = "income";
+  const { data: listIncomes = [], isLoading: isIncomesLoading } = useByCategory(token!, type, categoryData?._id || "");
   const totalAmount = listIncomes.reduce((sum, income) => sum + income.amount, 0);
 
   if (isIncomesLoading || isCategoriesLoading) {
@@ -61,7 +60,7 @@ const IncomesByCategory = () => {
           {listIncomes.length > 0 ? (
             <div className="space-y-4">
               {listIncomes.map((income) => {
-                const category = listCategories.find((cat) => cat.name === income.category);
+                const category = income.category;
                 return (
                   <Card key={income._id} className="w-full shadow-md hover:shadow-lg transition-all duration-300 border-0 bg-white/80 backdrop-blur-sm hover:bg-white/90">
                     <CardBody className="p-6">
@@ -75,7 +74,7 @@ const IncomesByCategory = () => {
                             <div className="flex items-center gap-3 mb-2">
                               <h3 className="font-poppins font-bold text-lg text-gray-800 truncate">{income.title}</h3>
                               <Chip size="sm" variant="flat" color="success" className="text-xs font-medium">
-                                {income.category}
+                                {income.category.name}
                               </Chip>
                             </div>
 

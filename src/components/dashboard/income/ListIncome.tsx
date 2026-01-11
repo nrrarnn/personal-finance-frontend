@@ -33,14 +33,14 @@ const ListIncome = () => {
 
   const handleDelete = async () => {
     try {
-      await api.delete(`/income/${deleteTargetId}`, {
+      await api.delete(`/transactions/${deleteTargetId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       setIsDeleteModalOpen(false);
       setDeleteTargetId(null);
-      queryClient.invalidateQueries({ queryKey: ["incomes"] });
+      queryClient.invalidateQueries({ queryKey: ["transactions", "income"] });
       toast.success("income deleted successfully");
     }catch (error) {
         console.error("Error deleting income:", error);
@@ -81,7 +81,7 @@ const ListIncome = () => {
             {listIncomes.length > 0 ? (
               <div className="space-y-4">
                 {listIncomes.map((income ) => {
-                  const category = listCategories.find((cat) => cat.name === income.category);
+                  const category = income.category;
                   return (
                     <div className="p-4 sm:p-6 bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300">
                       <div className="flex flex-row sm:items-start sm:justify-between gap-4">

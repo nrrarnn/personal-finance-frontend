@@ -43,36 +43,38 @@ const AddIncome: React.FC<AddIncomeProps> = ({ editingTransaction, setEditingTra
   const onSubmit: SubmitHandler<TransactionFormInput> = async (data) => {
     setIsSubmitting(true);
     try {
-      if(editingTransaction){
-      const response = await api.put(`/income/${editingTransaction?._id}`, data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const payload = { ...data, type: "income" };
+      if (editingTransaction) {
+        const response = await api.put(`/transactions/${editingTransaction?._id}`, payload, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-      if (response.status === 200) {
-        queryClient.invalidateQueries({ queryKey: ["incomes"] });
-        toast.success("Income updated successfully");
+        if (response.status === 200) {
+          queryClient.invalidateQueries({ queryKey: ["transactions", "income"] });
+          toast.success("Income updated successfully");
+          reset();
+          setEditingTransaction(null);
+        } else {
+          toast.error("Failed to update income:");
+        }
+      } else {
+        const response = await api.post("/transactions", payload, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (response.status === 200) {
+          queryClient.invalidateQueries({ queryKey: ["transactions", "income"] });
+          toast.success("Income added successfully");
+        } else {
+          toast.error("Failed to add income:");
+        }
         reset();
         setEditingTransaction(null);
-      } else {
-        toast.error("Failed to update income:");
-      } 
-    }else {
-      const response = await api.post("/income", data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (response.status === 200) {
-        queryClient.invalidateQueries({ queryKey: ["incomes"] });
-        toast.success("Income added successfully");
-      } else {
-        toast.error("Failed to add income:");
       }
-      reset();
-      setEditingTransaction(null);
-    }} catch (error) {
+    } catch (error) {
       console.error("Error processing income:", error);
     } finally {
       setIsSubmitting(false);
@@ -86,7 +88,7 @@ const AddIncome: React.FC<AddIncomeProps> = ({ editingTransaction, setEditingTra
       reset({
         title: editingTransaction.title || "",
         amount: editingTransaction.amount || 0,
-        category: editingTransaction.category || "",
+        category: editingTransaction.category._id || "",
         description: editingTransaction.description || "",
       });
     } else {
@@ -187,7 +189,7 @@ const AddIncome: React.FC<AddIncomeProps> = ({ editingTransaction, setEditingTra
                   value={field.value}
                 >
                   {(category) => (
-                    <SelectItem key={category.name} value={category.name}>
+                    <SelectItem key={category._id} value={category._id}>
                       {category.name}
                     </SelectItem>
                   )}

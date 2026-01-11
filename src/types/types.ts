@@ -1,3 +1,8 @@
+export interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+}
+
 export interface TokenProps {
   token: string | null;
 }
@@ -20,7 +25,7 @@ export interface TransactionResponse {
   _id: string;
   title: string;
   amount: number;
-  category: string;
+  category: Category;
   type: string;
   description: string;
   createdAt: string;

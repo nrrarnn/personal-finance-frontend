@@ -36,14 +36,14 @@ const ListExpenses = () => {
   const handleDelete = async () => {
     setIsLoading(true);
     try {
-      await api.delete(`/expense/${deleteTargetId}`, {
+      await api.delete(`/transactions/${deleteTargetId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       setIsDeleteModalOpen(false);
       setDeleteTargetId(null);
-      queryClient.invalidateQueries({ queryKey: ["expenses"] });
+      queryClient.invalidateQueries({ queryKey: ["transactions", "expense"] });
       toast.success("Expense deleted successfully");
     } catch (error) {
       console.error("Error deleting expense:", error);
@@ -85,8 +85,8 @@ const ListExpenses = () => {
 
             {listExpenses.length > 0 ? (
               <div className="space-y-4">
-                {listExpenses.map((income) => {
-                  const category = listCategories.find((cat) => cat.name === income.category);
+                {listExpenses.map((expense) => {
+                  const category = expense.category;
                   return (
                     <div className="p-4 sm:p-6 bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300">
                       <div className="flex flex-row sm:items-start sm:justify-between gap-4">
@@ -98,13 +98,13 @@ const ListExpenses = () => {
                           </div>
 
                           <div className="flex-1 min-w-0">
-                            <h3 className="font-poppins font-semibold text-base sm:text-lg text-gray-800 mb-1 truncate">{income.title}</h3>
+                            <h3 className="font-poppins font-semibold text-base sm:text-lg text-gray-800 mb-1 truncate">{expense.title}</h3>
 
                             <div className="flex flex-wrap gap-2 sm:gap-4 text-sm text-gray-600 mb-2">
                               <div className="flex items-center gap-1.5">
                                 <FaCalendar className="text-blue-500 text-xs sm:text-sm" />
                                 <span className="text-xs sm:text-sm">
-                                  {new Date(income.createdAt).toLocaleDateString("id-ID", {
+                                  {new Date(expense.createdAt).toLocaleDateString("id-ID", {
                                     day: "numeric",
                                     month: "short",
                                     year: "numeric",
@@ -113,10 +113,10 @@ const ListExpenses = () => {
                               </div>
                             </div>
 
-                            {income.description && (
+                            {expense.description && (
                               <div className="flex items-start gap-1.5 text-sm text-gray-600">
                                 <RiChat1Fill className="text-slate-500 mt-0.5 flex-shrink-0 text-xs sm:text-sm" />
-                                <span className="line-clamp-2 text-xs sm:text-sm leading-relaxed">{income.description}</span>
+                                <span className="line-clamp-2 text-xs sm:text-sm leading-relaxed">{expense.description}</span>
                               </div>
                             )}
                           </div>
@@ -124,15 +124,15 @@ const ListExpenses = () => {
 
                         <div className="flex flex-col items-end gap-3 sm:gap-4 sm:ml-4">
                           <div className="text-right">
-                            <div className="text-sm  font-bold text-emerald-600 mb-0.5 sm:mb-1">+IDR {income.amount.toLocaleString("id-ID")}</div>
-                            <div className="text-xs text-gray-500 uppercase tracking-wide font-medium">{income.type}</div>
+                            <div className="text-sm  font-bold text-emerald-600 mb-0.5 sm:mb-1">+IDR {expense.amount.toLocaleString("id-ID")}</div>
+                            <div className="text-xs text-gray-500 uppercase tracking-wide font-medium">{expense.type}</div>
                           </div>
 
                           <div className="flex gap-2 opacity-100 transition-opacity duration-300">
-                            <Button size="sm" variant="flat" color="primary" className="min-w-0 w-9 h-9 sm:w-10 sm:h-10 p-0 hover:scale-110 transition-transform duration-200 rounded-lg" onClick={() => handleEdit(income)}>
+                            <Button size="sm" variant="flat" color="primary" className="min-w-0 w-9 h-9 sm:w-10 sm:h-10 p-0 hover:scale-110 transition-transform duration-200 rounded-lg" onClick={() => handleEdit(expense)}>
                               <CiEdit className="text-base sm:text-lg" />
                             </Button>
-                            <Button size="sm" variant="flat" color="danger" className="min-w-0 w-9 h-9 sm:w-10 sm:h-10 p-0 hover:scale-110 transition-transform duration-200 rounded-lg" onClick={() => handleConfirmDelete(income._id)}>
+                            <Button size="sm" variant="flat" color="danger" className="min-w-0 w-9 h-9 sm:w-10 sm:h-10 p-0 hover:scale-110 transition-transform duration-200 rounded-lg" onClick={() => handleConfirmDelete(expense._id)}>
                               <MdDelete className="text-base sm:text-lg" />
                             </Button>
                           </div>

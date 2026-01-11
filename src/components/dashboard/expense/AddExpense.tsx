@@ -29,23 +29,24 @@ const AddExpense: React.FC<AddExpenseProps> = ({ token, editingExpense, setEditi
   const onSubmit: SubmitHandler<TransactionFormInput> = async (data) => {
     setIsSubmitting(true);
     try {
+      const payload = { ...data, type: "expense" };
       if (editingExpense) {
-        await api.put(`/expense/${editingExpense._id}`, data, {
+        await api.put(`/transactions/${editingExpense._id}`, payload, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        queryClient.invalidateQueries({ queryKey: ["expenses"] });
+        queryClient.invalidateQueries({ queryKey: ["transactions", "expense"] });
         toast.success("Expense updated successfully");
         reset();
         setEditingExpense(null);
       } else {
-        await api.post("/expense", data, {
+        await api.post("/transactions", payload, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        queryClient.invalidateQueries({ queryKey: ["expenses"] });
+        queryClient.invalidateQueries({ queryKey: ["transactions", "expense"] });
         toast.success("Expense added successfully");
       }
       reset();
@@ -64,7 +65,7 @@ const AddExpense: React.FC<AddExpenseProps> = ({ token, editingExpense, setEditi
       reset({
         title: editingExpense.title || "",
         amount: editingExpense.amount || 0,
-        category: editingExpense.category || "",
+        category: editingExpense.category._id || "",
         description: editingExpense.description || "",
       });
     } else {
@@ -165,7 +166,7 @@ const AddExpense: React.FC<AddExpenseProps> = ({ token, editingExpense, setEditi
                   value={field.value || ""}
                 >
                   {(category) => (
-                    <SelectItem key={category._id + 1} value={category.name}>
+                    <SelectItem key={category._id} value={category._id}>
                       {category.name}
                     </SelectItem>
                   )}

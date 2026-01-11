@@ -40,6 +40,8 @@ const HomeDashboard = () => {
   const { data: listExpenses = [] } = useExpenses(token!);
   const { data: listIncomes = [] } = useIncomes(token!);
 
+  console.log(balanceData);
+
   const balance = balanceData?.balance || 0;
   const totalIncome = balanceData?.totalIncome || 0;
   const totalExpense = balanceData?.totalExpense || 0;
@@ -54,43 +56,43 @@ const HomeDashboard = () => {
 
   const enhancedTransactions = [
     ...listExpenses.map((expense) => {
-      const category = listCategories.find((category) => category.name === expense.category);
       return {
         ...expense,
         type: "expense",
-        categoryName: category?.name || "Unknown",
-        icon: category?.icon || "❓",
+        categoryName: expense.category?.name || "Unknown",
+        icon: expense.category?.icon || "❓",
       };
     }),
     ...listIncomes.map((income) => {
-      const category = listCategories.find((category) => category.name === income.category);
       return {
         ...income,
         type: "income",
-        categoryName: category?.name || "Unknown",
-        icon: category?.icon || "💰",
+        categoryName: income.category?.name || "Unknown",
+        icon: income.category?.icon || "💰",
       };
     }),
   ];
 
   const sortedTransactions = enhancedTransactions.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
 
-  const dataSample = listIncomes.reduce<ChartData>((acc, category) => {
-    if (acc[category.category]) {
-      acc[category.category].y += category.amount;
+  const dataSample = listIncomes.reduce<ChartData>((acc, income) => {
+    const categoryName = income.category.name;
+    if (acc[categoryName]) {
+      acc[categoryName].y += income.amount;
     } else {
-      acc[category.category] = { x: category.category, y: category.amount };
+      acc[categoryName] = { x: categoryName, y: income.amount };
     }
     return acc;
   }, {});
 
   const result = Object.values(dataSample);
 
-  const dataExpenses = listExpenses.reduce<ChartData>((acc, category) => {
-    if (acc[category.category]) {
-      acc[category.category].y += category.amount;
+  const dataExpenses = listExpenses.reduce<ChartData>((acc, expense) => {
+    const categoryName = expense.category.name;
+    if (acc[categoryName]) {
+      acc[categoryName].y += expense.amount;
     } else {
-      acc[category.category] = { x: category.category, y: category.amount };
+      acc[categoryName] = { x: categoryName, y: expense.amount };
     }
     return acc;
   }, {});

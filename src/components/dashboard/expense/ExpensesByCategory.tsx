@@ -12,11 +12,10 @@ const ExpensesByCategory = () => {
   const token = useSelector((state: RootState) => state.auth.token);
 
   const { category } = useParams<Record<string, string | undefined>>();
-  const transaction: string = "expenses";
-
-  const { data: listExpenses = [], isLoading: isExpensesLoading } = useByCategory(token!, transaction, category!);
   const { data: listCategories = [], isLoading: isCategoriesLoading } = useCategories(token!);
   const categoryData = listCategories.find((cat) => cat.name === category);
+  const type: string = "expense";
+  const { data: listExpenses = [], isLoading: isExpensesLoading } = useByCategory(token!, type, categoryData?._id || "");
   const totalAmount = listExpenses.reduce((sum, expense) => sum + expense.amount, 0);
 
   if (isExpensesLoading || isCategoriesLoading) {
@@ -64,7 +63,7 @@ const ExpensesByCategory = () => {
           {listExpenses.length > 0 ? (
             <div className="space-y-4">
               {listExpenses.map((expense) => {
-                const category = listCategories.find((cat) => cat.name === expense.category);
+                const category = expense.category;
                 return (
                   <Card key={expense._id} className="w-full shadow-md hover:shadow-lg transition-all duration-300 border-0 bg-white/80 backdrop-blur-sm hover:bg-white/90">
                     <CardBody className="p-6">
@@ -79,7 +78,7 @@ const ExpensesByCategory = () => {
                             <div className="flex items-center gap-3 mb-2">
                               <h3 className="font-poppins font-bold text-lg text-gray-800 truncate">{expense.title}</h3>
                               <Chip size="sm" variant="flat" color="success" className="text-xs font-medium">
-                                {expense.category}
+                                {expense.category.name}
                               </Chip>
                             </div>
 
