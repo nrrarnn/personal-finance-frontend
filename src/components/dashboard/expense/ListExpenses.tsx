@@ -20,7 +20,7 @@ const ListExpenses = () => {
   const token = useSelector((state: RootState) => state.auth.token);
 
   const { data: listExpenses = [], isLoading: isExpensesLoading } = useExpenses(token!);
-  const { data: listCategories = [], isLoading: isCategoriesLoading } = useCategories(token!);
+  const { isLoading: isCategoriesLoading } = useCategories(token!);
   const [editingExpense, setEditingExpense] = useState<TransactionResponse | null>(null);
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -104,11 +104,7 @@ const ListExpenses = () => {
                               <div className="flex items-center gap-1.5">
                                 <FaCalendar className="text-blue-500 text-xs sm:text-sm" />
                                 <span className="text-xs sm:text-sm">
-                                  {new Date(expense.createdAt).toLocaleDateString("id-ID", {
-                                    day: "numeric",
-                                    month: "short",
-                                    year: "numeric",
-                                  })}
+                                  {expense.date ? new Date(expense.date).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }) : new Date(expense.createdAt).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}
                                 </span>
                               </div>
                             </div>

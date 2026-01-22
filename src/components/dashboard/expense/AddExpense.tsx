@@ -22,6 +22,7 @@ const AddExpense: React.FC<AddExpenseProps> = ({ token, editingExpense, setEditi
       amount: 0,
       category: "",
       description: "",
+      date: new Date().toISOString().split("T")[0],
     },
   });
   const queryClient = useQueryClient();
@@ -67,6 +68,7 @@ const AddExpense: React.FC<AddExpenseProps> = ({ token, editingExpense, setEditi
         amount: editingExpense.amount || 0,
         category: editingExpense.category._id || "",
         description: editingExpense.description || "",
+        date: editingExpense.date ? editingExpense.date.split("T")[0] : new Date().toISOString().split("T")[0],
       });
     } else {
       reset({
@@ -74,6 +76,7 @@ const AddExpense: React.FC<AddExpenseProps> = ({ token, editingExpense, setEditi
         amount: 0,
         category: "",
         description: "",
+        date: new Date().toISOString().split("T")[0],
       });
     }
   }, [editingExpense, reset]);
@@ -183,6 +186,26 @@ const AddExpense: React.FC<AddExpenseProps> = ({ token, editingExpense, setEditi
                   type="text"
                   label="Description"
                   placeholder="Additional notes about this expense"
+                  variant="bordered"
+                  color="primary"
+                  size="lg"
+                  classNames={{
+                    input: "text-gray-700",
+                    label: "text-gray-600 font-medium",
+                    inputWrapper: "border-gray-200 hover:border-primary-400 focus-within:border-primary-500 bg-white/50",
+                  }}
+                />
+              )}
+            />
+
+            <Controller
+              name="date"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  type="date"
+                  label="Transaction Date"
                   variant="bordered"
                   color="primary"
                   size="lg"

@@ -19,6 +19,7 @@ export interface TransactionFormInput {
   amount: number;
   category: string;
   description: string;
+  date?: string;
 }
 
 export interface TransactionResponse {
@@ -28,6 +29,7 @@ export interface TransactionResponse {
   category: Category;
   type: string;
   description: string;
+  date?: string;
   createdAt: string;
   updatedAt: string;
 }

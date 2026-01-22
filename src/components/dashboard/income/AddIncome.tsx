@@ -8,12 +8,12 @@ import { toast } from "react-toastify";
 import { TransactionResponse } from "../../../types/types";
 import { useQueryClient } from "@tanstack/react-query";
 
-
 interface TransactionFormInput {
   title: string;
   amount: number;
   category: string;
   description: string;
+  date?: string;
 }
 
 interface AddIncomeProps {
@@ -23,20 +23,17 @@ interface AddIncomeProps {
 }
 
 const AddIncome: React.FC<AddIncomeProps> = ({ editingTransaction, setEditingTransaction, token }) => {
-  const {data: categories = []} = useCategories(token || "");
+  const { data: categories = [] } = useCategories(token || "");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const queryClient = useQueryClient();
 
-  const {
-    handleSubmit,
-    control,
-    reset,
-  } = useForm<TransactionFormInput>({
+  const { handleSubmit, control, reset } = useForm<TransactionFormInput>({
     defaultValues: {
       title: "",
       amount: 0,
       category: "",
       description: "",
+      date: new Date().toISOString().split("T")[0],
     },
   });
 
@@ -90,6 +87,7 @@ const AddIncome: React.FC<AddIncomeProps> = ({ editingTransaction, setEditingTra
         amount: editingTransaction.amount || 0,
         category: editingTransaction.category._id || "",
         description: editingTransaction.description || "",
+        date: editingTransaction.date ? editingTransaction.date.split("T")[0] : new Date().toISOString().split("T")[0],
       });
     } else {
       reset({
@@ -97,6 +95,7 @@ const AddIncome: React.FC<AddIncomeProps> = ({ editingTransaction, setEditingTra
         amount: 0,
         category: "",
         description: "",
+        date: new Date().toISOString().split("T")[0],
       });
     }
   }, [editingTransaction, reset]);
@@ -218,6 +217,26 @@ const AddIncome: React.FC<AddIncomeProps> = ({ editingTransaction, setEditingTra
               )}
             />
 
+            <Controller
+              name="date"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  type="date"
+                  label="Transaction Date"
+                  variant="bordered"
+                  color="primary"
+                  size="lg"
+                  classNames={{
+                    input: "text-gray-700",
+                    label: "text-gray-600 font-medium",
+                    inputWrapper: "border-gray-200 hover:border-primary-400 focus-within:border-primary-500 bg-white/50",
+                  }}
+                />
+              )}
+            />
+
             <div className="pt-2">
               <Button
                 type="submit"
@@ -226,16 +245,16 @@ const AddIncome: React.FC<AddIncomeProps> = ({ editingTransaction, setEditingTra
                 disabled={isSubmitting}
                 className="w-full font-semibold bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
               >
-                {
-                  isSubmitting ? (
-                    <span className="flex items-center justify-center">
-                      <FaPlus className="animate-spin mr-2" />
-                      Processing...
-                    </span>
-                  ) : (
-                    editingTransaction ? "Update Income" : "Add Income"
-                  )
-                }
+                {isSubmitting ? (
+                  <span className="flex items-center justify-center">
+                    <FaPlus className="animate-spin mr-2" />
+                    Processing...
+                  </span>
+                ) : editingTransaction ? (
+                  "Update Income"
+                ) : (
+                  "Add Income"
+                )}
               </Button>
             </div>
           </form>

@@ -45,9 +45,6 @@ export const getExpenses = (token: string): Promise<TransactionResponse[]> => ge
 export const getByCategories = (token: string, type: string, categoryId: string): Promise<TransactionResponse[]> => getTransactions(token, type, undefined, undefined, categoryId);
 export const getCategories = (token: string): Promise<Category[]> => fetchData('/categories', token);
 export const getBalance = async (token: string): Promise<BalanceResponse> => {
-  // Kita kasih tahu fetchData kalau bentuk datanya ada wrapper APIWrapper
   const response = await fetchData<APIWrapper<BalanceResponse>>('/balance', token);
-  
-  // Lalu kita return isinya saja (.data)
   return response.data;
 };
