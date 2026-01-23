@@ -20,9 +20,11 @@ interface AddIncomeProps {
   token: string | null;
   editingTransaction: TransactionResponse | null;
   setEditingTransaction: Dispatch<SetStateAction<TransactionResponse | null>>;
+  onSuccess?: () => void;
+  isModal?: boolean;
 }
 
-const AddIncome: React.FC<AddIncomeProps> = ({ editingTransaction, setEditingTransaction, token }) => {
+const AddIncome: React.FC<AddIncomeProps> = ({ editingTransaction, setEditingTransaction, token, onSuccess, isModal }) => {
   const { data: categories = [] } = useCategories(token || "");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const queryClient = useQueryClient();
@@ -53,6 +55,7 @@ const AddIncome: React.FC<AddIncomeProps> = ({ editingTransaction, setEditingTra
           toast.success("Income updated successfully");
           reset();
           setEditingTransaction(null);
+          onSuccess?.();
         } else {
           toast.error("Failed to update income:");
         }
@@ -65,6 +68,7 @@ const AddIncome: React.FC<AddIncomeProps> = ({ editingTransaction, setEditingTra
         if (response.status === 200) {
           queryClient.invalidateQueries({ queryKey: ["transactions", "income"] });
           toast.success("Income added successfully");
+          onSuccess?.();
         } else {
           toast.error("Failed to add income:");
         }
@@ -101,14 +105,18 @@ const AddIncome: React.FC<AddIncomeProps> = ({ editingTransaction, setEditingTra
   }, [editingTransaction, reset]);
 
   return (
-    <div className="w-full max-w-sm">
-      <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
-        <CardHeader className="flex flex-col items-start px-6 pt-6 pb-2">
-          <h2 className="text-2xl font-bold text-gray-800 mb-1">{editingTransaction ? "Edit Income" : "Add New Income"}</h2>
-          <p className="text-gray-600 text-sm">{editingTransaction ? "Update your income details" : "Track your spending effectively"}</p>
-        </CardHeader>
-        <Divider className="opacity-20" />
-        <CardBody className="px-6 pt-4 pb-6">
+    <div className={isModal ? "w-full" : "w-full max-w-sm"}>
+      <Card className={isModal ? "shadow-none border-0 bg-transparent" : "shadow-lg border-0 bg-white/80 backdrop-blur-sm"}>
+        {!isModal && (
+          <>
+            <CardHeader className="flex flex-col items-start px-6 pt-6 pb-2">
+              <h2 className="text-2xl font-bold text-gray-800 mb-1">{editingTransaction ? "Edit Income" : "Add New Income"}</h2>
+              <p className="text-gray-600 text-sm">{editingTransaction ? "Update your income details" : "Track your spending effectively"}</p>
+            </CardHeader>
+            <Divider className="opacity-20" />
+          </>
+        )}
+        <CardBody className={isModal ? "px-0 pt-0 pb-0" : "px-6 pt-4 pb-6"}>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <Controller
               name="title"

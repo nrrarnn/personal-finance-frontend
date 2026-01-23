@@ -11,9 +11,11 @@ export interface AddExpenseProps {
   token: string | null;
   editingExpense: TransactionResponse | null;
   setEditingExpense: (expense: TransactionResponse | null) => void;
+  onSuccess?: () => void;
+  isModal?: boolean;
 }
 
-const AddExpense: React.FC<AddExpenseProps> = ({ token, editingExpense, setEditingExpense }) => {
+const AddExpense: React.FC<AddExpenseProps> = ({ token, editingExpense, setEditingExpense, onSuccess, isModal }) => {
   const { data: categories = [] } = useCategories(token!);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { handleSubmit, control, reset } = useForm<TransactionFormInput>({
@@ -41,6 +43,7 @@ const AddExpense: React.FC<AddExpenseProps> = ({ token, editingExpense, setEditi
         toast.success("Expense updated successfully");
         reset();
         setEditingExpense(null);
+        onSuccess?.();
       } else {
         await api.post("/transactions", payload, {
           headers: {
@@ -49,6 +52,7 @@ const AddExpense: React.FC<AddExpenseProps> = ({ token, editingExpense, setEditi
         });
         queryClient.invalidateQueries({ queryKey: ["transactions", "expense"] });
         toast.success("Expense added successfully");
+        onSuccess?.();
       }
       reset();
       setEditingExpense(null);
@@ -82,14 +86,18 @@ const AddExpense: React.FC<AddExpenseProps> = ({ token, editingExpense, setEditi
   }, [editingExpense, reset]);
 
   return (
-    <div className="w-full max-w-sm">
-      <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
-        <CardHeader className="flex flex-col items-start px-6 pt-6 pb-2">
-          <h2 className="text-2xl font-bold text-gray-800 mb-1">{editingExpense ? "Edit Expense" : "Add New Expense"}</h2>
-          <p className="text-gray-600 text-sm">{editingExpense ? "Update your expense details" : "Track your spending effectively"}</p>
-        </CardHeader>
-        <Divider className="opacity-20" />
-        <CardBody className="px-6 pt-4 pb-6">
+    <div className={isModal ? "w-full" : "w-full max-w-sm"}>
+      <Card className={isModal ? "shadow-none border-0 bg-transparent" : "shadow-lg border-0 bg-white/80 backdrop-blur-sm"}>
+        {!isModal && (
+          <>
+            <CardHeader className="flex flex-col items-start px-6 pt-6 pb-2">
+              <h2 className="text-2xl font-bold text-gray-800 mb-1">{editingExpense ? "Edit Expense" : "Add New Expense"}</h2>
+              <p className="text-gray-600 text-sm">{editingExpense ? "Update your expense details" : "Track your spending effectively"}</p>
+            </CardHeader>
+            <Divider className="opacity-20" />
+          </>
+        )}
+        <CardBody className={isModal ? "px-0 pt-0 pb-0" : "px-6 pt-4 pb-6"}>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <Controller
               name="title"
