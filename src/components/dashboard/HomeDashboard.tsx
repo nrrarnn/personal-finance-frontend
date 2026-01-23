@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Avatar, Button, Card, CardBody, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ScrollShadow, Tab, Tabs } from "@nextui-org/react";
 import { Link, useNavigate } from "react-router-dom";
 import { truncateText } from "../../data/functionTruncate";
 import { colors, colors2 } from "../../data/colors";
-import { ChartData } from "../../types/types";
+import { ChartData, CategoryStat } from "../../types/types";
 import { VictoryTheme, VictoryPie } from "victory";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../store/authSlice";
@@ -13,6 +13,7 @@ import { BiLogOut, BiTrendingUp, BiTrendingDown, BiWallet } from "react-icons/bi
 import { RootState } from "../../store/store";
 import { FaArrowUp, FaArrowDown, FaChartLine } from "react-icons/fa";
 import { useBalance, useCategories, useExpenses, useIncomes } from "../../hooks/useTransactions";
+import { getCategoryStats } from "../../api/servicesApi";
 
 const HomeDashboard = () => {
   const token = useSelector((state: RootState) => state.auth.token);
@@ -23,8 +24,34 @@ const HomeDashboard = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
+  // Get current date for default month/year
+  const currentDate = new Date();
+  const [selectedMonth, setSelectedMonth] = useState(currentDate.getMonth() + 1);
+  const [selectedYear, setSelectedYear] = useState(currentDate.getFullYear());
+  const [categoryStats, setCategoryStats] = useState<CategoryStat[]>([]);
+  const [isStatsLoading, setIsStatsLoading] = useState(false);
+
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
+
+  // Fetch category stats when month/year changes
+  useEffect(() => {
+    const fetchStats = async () => {
+      if (!token) return;
+      setIsStatsLoading(true);
+      try {
+        const stats = await getCategoryStats(token, selectedMonth, selectedYear);
+        setCategoryStats(stats);
+      } catch (error) {
+        console.error("Failed to fetch category stats:", error);
+        setCategoryStats([]);
+      } finally {
+        setIsStatsLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, [token, selectedMonth, selectedYear]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -75,29 +102,21 @@ const HomeDashboard = () => {
 
   const sortedTransactions = enhancedTransactions.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
 
-  const dataSample = listIncomes.reduce<ChartData>((acc, income) => {
-    const categoryName = income.category.name;
-    if (acc[categoryName]) {
-      acc[categoryName].y += income.amount;
-    } else {
-      acc[categoryName] = { x: categoryName, y: income.amount };
-    }
-    return acc;
-  }, {});
+  // Transform API data into chart format
+  const incomeStatsData = categoryStats.filter((stat) => stat.type === "income");
+  const expenseStatsData = categoryStats.filter((stat) => stat.type === "expense");
 
-  const result = Object.values(dataSample);
+  const chartIncomeData: ChartData = {};
+  incomeStatsData.forEach((stat) => {
+    chartIncomeData[stat.categoryName] = { x: stat.categoryName, y: stat.totalAmount };
+  });
+  const result = Object.values(chartIncomeData);
 
-  const dataExpenses = listExpenses.reduce<ChartData>((acc, expense) => {
-    const categoryName = expense.category.name;
-    if (acc[categoryName]) {
-      acc[categoryName].y += expense.amount;
-    } else {
-      acc[categoryName] = { x: categoryName, y: expense.amount };
-    }
-    return acc;
-  }, {});
-
-  const resultExpenses = Object.values(dataExpenses);
+  const chartExpenseData: ChartData = {};
+  expenseStatsData.forEach((stat) => {
+    chartExpenseData[stat.categoryName] = { x: stat.categoryName, y: stat.totalAmount };
+  });
+  const resultExpenses = Object.values(chartExpenseData);
 
   const savingsRate = totalIncome > 0 ? (((totalIncome - totalExpense) / totalIncome) * 100).toFixed(1) : 0;
 
@@ -255,69 +274,104 @@ const HomeDashboard = () => {
           <div>
             <Card className="bg-white/60 backdrop-blur-sm shadow-lg border border-white/50">
               <CardBody className="p-6">
-                <h2 className="text-xl font-bold text-slate-800 mb-4">Financial Overview</h2>
-                <Tabs
-                  aria-label="Financial Charts"
-                  classNames={{
-                    tabList: "gap-6 w-full relative rounded-lg bg-slate-100/50 p-1",
-                    cursor: "w-full bg-white shadow-lg",
-                    tab: "max-w-fit px-4 py-2 h-10",
-                    tabContent: "group-data-[selected=true]:text-indigo-600 font-medium",
-                  }}
-                >
-                  <Tab key="incomes" title="Income Distribution">
-                    <div className="mt-4">
-                      {result.length > 0 ? (
-                        <div className="bg-white/50 rounded-lg p-4">
-                          <VictoryPie
-                            data={result}
-                            theme={VictoryTheme.clean}
-                            colorScale={["#10b981", "#06b6d4", "#3b82f6", "#6366f1", "#8b5cf6", "#d946ef"]}
-                            innerRadius={50}
-                            padAngle={2}
-                            animate={{
-                              duration: 1000,
-                              onLoad: { duration: 500 },
-                            }}
-                          />
-                        </div>
-                      ) : (
-                        <div className="flex items-center justify-center h-64 text-slate-500">
-                          <div className="text-center">
-                            <div className="text-4xl mb-2">📊</div>
-                            <div>No income data available</div>
-                          </div>
-                        </div>
-                      )}
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl font-bold text-slate-800">Financial Overview</h2>
+                  <div className="flex gap-2">
+                    <select
+                      value={selectedMonth}
+                      onChange={(e) => setSelectedMonth(Number(e.target.value))}
+                      className="px-3 py-2 rounded-lg border border-slate-300 text-sm font-medium text-slate-700 bg-white hover:border-slate-400 transition-colors"
+                    >
+                      {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
+                        <option key={month} value={month}>
+                          {new Date(2024, month - 1).toLocaleString("en-US", { month: "short" })}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={selectedYear}
+                      onChange={(e) => setSelectedYear(Number(e.target.value))}
+                      className="px-3 py-2 rounded-lg border border-slate-300 text-sm font-medium text-slate-700 bg-white hover:border-slate-400 transition-colors"
+                    >
+                      {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i).map((year) => (
+                        <option key={year} value={year}>
+                          {year}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                {isStatsLoading ? (
+                  <div className="flex items-center justify-center h-64 text-slate-500">
+                    <div className="text-center">
+                      <div className="animate-spin text-4xl mb-2">⏳</div>
+                      <div>Loading chart data...</div>
                     </div>
-                  </Tab>
-                  <Tab key="expenses" title="Expense Breakdown">
-                    <div className="mt-4">
-                      {resultExpenses.length > 0 ? (
-                        <div className="bg-white/50 rounded-lg p-4">
-                          <VictoryPie
-                            data={resultExpenses}
-                            theme={VictoryTheme.clean}
-                            colorScale={["#ef4444", "#f97316", "#eab308", "#84cc16", "#06b6d4", "#6366f1"]}
-                            innerRadius={50}
-                            padAngle={2}
-                            animate={{
-                              duration: 1000,
-                              onLoad: { duration: 500 },
-                            }}
-                          />
-                        </div>
-                      ) : (
-                        <div className="flex items-center justify-center h-64 text-slate-500">
-                          <div className="text-center">
-                            <div className="text-4xl mb-2">💸</div>
-                            <div>No expense data available</div>
+                  </div>
+                ) : (
+                  <Tabs
+                    aria-label="Financial Charts"
+                    classNames={{
+                      tabList: "gap-6 w-full relative rounded-lg bg-slate-100/50 p-1",
+                      cursor: "w-full bg-white shadow-lg",
+                      tab: "max-w-fit px-4 py-2 h-10",
+                      tabContent: "group-data-[selected=true]:text-indigo-600 font-medium",
+                    }}
+                  >
+                    <Tab key="incomes" title="Income Distribution">
+                      <div className="mt-4">
+                        {result.length > 0 ? (
+                          <div className="bg-white/50 rounded-lg p-4">
+                            <VictoryPie
+                              data={result}
+                              theme={VictoryTheme.clean}
+                              colorScale={["#10b981", "#06b6d4", "#3b82f6", "#6366f1", "#8b5cf6", "#d946ef"]}
+                              innerRadius={50}
+                              padAngle={2}
+                              animate={{
+                                duration: 1000,
+                                onLoad: { duration: 500 },
+                              }}
+                            />
                           </div>
-                        </div>
-                      )}
-                    </div>
-                  </Tab>
-                </Tabs>
+                        ) : (
+                          <div className="flex items-center justify-center h-64 text-slate-500">
+                            <div className="text-center">
+                              <div className="text-4xl mb-2">📊</div>
+                              <div>No income data available</div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </Tab>
+                    <Tab key="expenses" title="Expense Breakdown">
+                      <div className="mt-4">
+                        {resultExpenses.length > 0 ? (
+                          <div className="bg-white/50 rounded-lg p-4">
+                            <VictoryPie
+                              data={resultExpenses}
+                              theme={VictoryTheme.clean}
+                              colorScale={["#ef4444", "#f97316", "#eab308", "#84cc16", "#06b6d4", "#6366f1"]}
+                              innerRadius={50}
+                              padAngle={2}
+                              animate={{
+                                duration: 1000,
+                                onLoad: { duration: 500 },
+                              }}
+                            />
+                          </div>
+                        ) : (
+                          <div className="flex items-center justify-center h-64 text-slate-500">
+                            <div className="text-center">
+                              <div className="text-4xl mb-2">💸</div>
+                              <div>No expense data available</div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </Tab>
+                  </Tabs>
+                )}
               </CardBody>
             </Card>
           </div>

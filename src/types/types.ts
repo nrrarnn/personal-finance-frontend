@@ -47,3 +47,12 @@ export interface BalanceResponse {
   totalIncome: number;
   totalExpense: number;
 }
+
+export interface CategoryStat {
+  totalAmount: number;
+  count: number;
+  categoryId: string;
+  categoryName: string;
+  categoryIcon: string;
+  type: "income" | "expense";
+}

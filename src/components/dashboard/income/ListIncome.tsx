@@ -18,7 +18,7 @@ import LoadingSpinner from "../../LoadingSpinner";
 const ListIncome = () => {
   const token = useSelector((state: RootState) => state.auth.token);
   const { data: listIncomes = [], isLoading: loadingIncomes } = useIncomes(token!);
-  const { data: listCategories = [], isLoading: loadingCategories } = useCategories(token!);
+  const { isLoading: loadingCategories } = useCategories(token!);
   const [editingIncome, setEditingIncome] = useState<TransactionResponse | null>(null);
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -99,11 +99,7 @@ const ListIncome = () => {
                               <div className="flex items-center gap-1.5">
                                 <FaCalendar className="text-blue-500 text-xs sm:text-sm" />
                                 <span className="text-xs sm:text-sm">
-                                  {new Date(income.createdAt).toLocaleDateString("id-ID", {
-                                    day: "numeric",
-                                    month: "short",
-                                    year: "numeric",
-                                  })}
+                                  {income.date ? new Date(income.date).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }) : new Date(income.createdAt).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}
                                 </span>
                               </div>
                             </div>

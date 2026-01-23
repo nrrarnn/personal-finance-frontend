@@ -1,4 +1,4 @@
-import { BalanceResponse, Category, TransactionResponse } from "../types/types";
+import { BalanceResponse, Category, TransactionResponse, CategoryStat } from "../types/types";
 import api from "./api";
 
 interface APIWrapper<T> {
@@ -47,4 +47,16 @@ export const getCategories = (token: string): Promise<Category[]> => fetchData('
 export const getBalance = async (token: string): Promise<BalanceResponse> => {
   const response = await fetchData<APIWrapper<BalanceResponse>>('/balance', token);
   return response.data;
+};
+
+export const getCategoryStats = async (
+  token: string,
+  month: number,
+  year: number
+): Promise<CategoryStat[]> => {
+  const response = await api.get<APIWrapper<CategoryStat[]>>('/stats/category', {
+    headers: { Authorization: `Bearer ${token}` },
+    params: { month, year },
+  });
+  return response.data.data;
 };
