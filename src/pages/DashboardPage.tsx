@@ -1,28 +1,30 @@
 import ListCategories from "../components/dashboard/category/ListCategories";
+import CategoryDetail from "../components/dashboard/category/CategoryDetail";
 import ExpensesByCategory from "../components/dashboard/expense/ExpensesByCategory";
 import ListExpenses from "../components/dashboard/expense/ListExpenses";
 import HomeDashboard from "../components/dashboard/HomeDashboard";
 import ListIncome from "../components/dashboard/income/ListIncome";
 import ListIncomesByCategory from "../components/dashboard/income/ListIncomesByCategory";
-import Sidebar from "../components/dashboard/Sidebar"
+import Sidebar from "../components/dashboard/Sidebar";
 import { Route, Routes } from "react-router-dom";
 
 const DashboardPage = () => {
-  return(
+  return (
     <>
-      <Sidebar/>
+      <Sidebar />
       <div className="flex-1 ml-0 md:ml-[255px]  bg-[#f0f7ff] h-full">
         <Routes>
-          <Route path="/home" element={<HomeDashboard/>} />
-          <Route path="/incomes" element={<ListIncome/>} />
-          <Route path="/incomes/:category" element={<ListIncomesByCategory/>} />
-          <Route path="/expenses" element={<ListExpenses/>} />
-          <Route path="/expenses/:category" element={<ExpensesByCategory/>} />
-          <Route path="/categories" element={<ListCategories/>} />
+          <Route path="/home" element={<HomeDashboard />} />
+          <Route path="/incomes" element={<ListIncome />} />
+          <Route path="/incomes/:category" element={<ListIncomesByCategory />} />
+          <Route path="/expenses" element={<ListExpenses />} />
+          <Route path="/expenses/:category" element={<ExpensesByCategory />} />
+          <Route path="/categories" element={<ListCategories />} />
+          <Route path="/categories/:categoryId" element={<CategoryDetail />} />
         </Routes>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default DashboardPage
+export default DashboardPage;

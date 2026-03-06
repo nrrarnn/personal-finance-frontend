@@ -249,7 +249,6 @@ const ListIncome = () => {
               )}
             </>
           ) : (
-            // FIX: Logika di bawah ini sudah diperbaiki (menambahkan ':' untuk else)
             filteredIncomes.length === 0 && (searchValue || selectedCategory || startDate || endDate) ? (
               <div className="text-center py-16">
                 <div className="w-24 h-24 bg-gradient-to-br from-yellow-100 to-orange-100 rounded-full flex items-center justify-center mx-auto mb-6">

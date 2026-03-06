@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { TransactionResponse, Category, BalanceResponse } from '../types/types'
-import { getBalance, getByCategories, getCategories, getExpenses, getIncomes } from '../api/servicesApi'
+import { getBalance, getByCategories, getCategories, getExpenses, getIncomes, getCategoryTransactions, CategoryTransactionResponse } from '../api/servicesApi'
 
 export const useIncomes = (token: string) =>
   useQuery<TransactionResponse[]>({
@@ -35,4 +35,16 @@ export const useByCategory = (token: string, type: string, categoryId: string) =
     queryKey: ['byCategory', type, categoryId],
     queryFn: () => getByCategories(token, type, categoryId),
     enabled: !!token && !!type && !!categoryId,
+  })
+
+export const useCategoryTransactions = (
+  token: string,
+  categoryId: string,
+  month: number,
+  year: number
+) =>
+  useQuery<CategoryTransactionResponse>({
+    queryKey: ['categoryTransactions', categoryId, month, year],
+    queryFn: () => getCategoryTransactions(token, categoryId, month, year),
+    enabled: !!token && !!categoryId,
   })

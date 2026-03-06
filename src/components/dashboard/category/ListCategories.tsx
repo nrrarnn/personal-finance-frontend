@@ -13,6 +13,7 @@ import { useState } from "react";
 import ConfirmDeleteModal from "../../ConfirmDeleteModal";
 import LoadingSpinner from "../../LoadingSpinner";
 import { Category } from "../../../types/types";
+import { Link } from "react-router-dom";
 
 const ListCategories = () => {
   const token = useSelector((state: RootState) => state.auth.token);
@@ -21,7 +22,7 @@ const ListCategories = () => {
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [ isDeleteLoading, setIsDeleteLoading] = useState(false);
+  const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const queryClient = useQueryClient();
 
   const incomeCategories = ListCategories.filter((category) => category.type === "income");
@@ -101,7 +102,9 @@ const ListCategories = () => {
                     {incomeCategories.map((category) => (
                       <TableRow key={category._id} className="hover:bg-slate-50 transition-colors">
                         <TableCell>
-                          <span className="text-2xl">{category.icon}</span>
+                          <Link to={`/dashboard/categories/${category._id}`} className="text-2xl hover:scale-125 transition-transform inline-block cursor-pointer">
+                            {category.icon}
+                          </Link>
                         </TableCell>
                         <TableCell>
                           <span className="font-semibold text-gray-800">{category.name}</span>
@@ -149,7 +152,9 @@ const ListCategories = () => {
                     {expenseCategories.map((category) => (
                       <TableRow key={category._id} className="hover:bg-slate-50 transition-colors">
                         <TableCell>
-                          <span className="text-2xl">{category.icon}</span>
+                          <Link to={`/dashboard/categories/${category._id}`} className="text-2xl hover:scale-125 transition-transform inline-block cursor-pointer">
+                            {category.icon}
+                          </Link>
                         </TableCell>
                         <TableCell>
                           <span className="font-semibold text-gray-800">{category.name}</span>

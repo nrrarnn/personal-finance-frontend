@@ -27,11 +27,11 @@ export const getTransactions = async (
   year?: number,
   categoryId?: string
 ): Promise<TransactionResponse[]> => {
-  const params: Record<string, any> = {};
+  const params: Record<string, string | number> = {};
   if (type) params.type = type;
   if (month) params.month = month;
   if (year) params.year = year;
-  if (categoryId) params.category = categoryId;
+  if (categoryId) params.categoryId = categoryId;
 
   const response = await api.get<TransactionResponse[]>("/transactions", {
     headers: { Authorization: `Bearer ${token}` },
@@ -46,6 +46,28 @@ export const getByCategories = (token: string, type: string, categoryId: string)
 export const getCategories = (token: string): Promise<Category[]> => fetchData('/categories', token);
 export const getBalance = async (token: string): Promise<BalanceResponse> => {
   const response = await fetchData<APIWrapper<BalanceResponse>>('/balance', token);
+  return response.data;
+};
+
+export interface CategoryTransactionResponse {
+  totalAmount: number;
+  transactions: TransactionResponse[];
+}
+
+export const getCategoryTransactions = async (
+  token: string,
+  categoryId: string,
+  month: number,
+  year: number
+): Promise<CategoryTransactionResponse> => {
+  const response = await api.get<CategoryTransactionResponse>("/transactions/category", {
+    headers: { Authorization: `Bearer ${token}` },
+    params: {
+      categoryId,
+      month,
+      year,
+    },
+  });
   return response.data;
 };
 
